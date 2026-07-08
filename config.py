@@ -1,0 +1,81 @@
+"""
+config.py
+---------
+Centraliza TODAS as configuracoes do pipeline:
+  - leitura das credenciais do MySQL (a partir do arquivo .env)
+  - parametros do que vamos baixar/processar (ID do arquivo no Drive)
+  - nomes dos arquivos e das tabelas
+
+Assim nenhuma senha fica escrita no codigo (boa pratica de seguranca).
+"""
+
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# ---------------------------------------------------------------------------
+# Caminhos do projeto
+# ---------------------------------------------------------------------------
+# PASTA_RAIZ = .../treino_cafeteria (a pasta deste arquivo)
+PASTA_RAIZ = Path(__file__).resolve().parent
+PASTA_DADOS = PASTA_RAIZ / "data"   # onde o .zip e os .csv ficam (ignorada pelo Git)
+
+
+# ---------------------------------------------------------------------------
+# Leitura simples do arquivo .env (sem biblioteca externa)
+# ---------------------------------------------------------------------------
+def carregar_env():
+    """Le o arquivo .env (se existir) e joga as variaveis para os.environ."""
+    arquivo_env = PASTA_RAIZ / ".env"
+    if not arquivo_env.exists():
+        return
+    for linha in arquivo_env.read_text(encoding="utf-8").splitlines():
+        linha = linha.strip()
+        # ignora linhas vazias e comentarios
+        if not linha or linha.startswith("#") or "=" not in linha:
+            continue
+        chave, valor = linha.split("=", 1)
+        os.environ.setdefault(chave.strip(), valor.strip())
+
+
+carregar_env()
+
+load_dotenv()
+
+# ---------------------------------------------------------------------------
+# Credenciais do MySQL (armazenadas no arquivo .env)
+# ---------------------------------------------------------------------------
+MYSQL_CONFIG = {
+    "host": os.getenv("HOST"),
+    "port": os.getenv("PORT"),
+    "user": os.getenv("USER"),
+    "password": os.getenv("PASSWORD"),
+    "database": os.getenv("DB"),
+}
+
+# ---------------------------------------------------------------------------
+# O que vamos baixar e processar
+# ---------------------------------------------------------------------------
+ANO = "2025"
+
+# ---- De onde baixar o .zip ----
+DRIVE_FILE_ID = "1Sru-TYSYo-cn-L9WW2DUwhyIUdkM3fIe"
+
+# Tamanho do bloco de leitura/insercao (numero de linhas por vez).
+
+TAMANHO_BLOCO = 50_000
+
+# ---------------------------------------------------------------------------
+# Mapeamento: cada arquivo CSV dentro do .zip -> tabela RAW correspondente
+# (o nome do CSV usa o ANO como prefixo, ex.: 2025_Viagem.csv)
+# ---------------------------------------------------------------------------
+ARQUIVOS = {
+    "viagem":     {"csv": f"{ANO}_Viagem.csv",     "tabela_raw": "raw_viagem"},
+    "pagamento":  {"csv": f"{ANO}_Pagamento.csv",  "tabela_raw": "raw_pagamento"},
+    "passagem":   {"csv": f"{ANO}_Passagem.csv",   "tabela_raw": "raw_passagem"},
+    "trecho":     {"csv": f"{ANO}_Trecho.csv",     "tabela_raw": "raw_trecho"},
+}
+
+# Caracteristicas dos arquivos CSV do Portal da Transparencia:
+CSV_SEPARADOR = ";"
+CSV_ENCODING = "latin-1"   # acentuacao no padrao ISO-8859-1

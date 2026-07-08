@@ -1,0 +1,234 @@
+/*
+-- Criação BD
+*/
+DROP DATABASE IF EXISTS transparencia;
+CREATE DATABASE transparencia
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+USE transparencia;
+
+/*
+-- 2) CAMADA RAW  (replica do CSV: TODAS as colunas sao VARCHAR / texto)
+--    Sem PK/FK: a Raw guarda o dado bruto, exatamente como veio do arquivo.
+--    A ordem das colunas bate com a ordem do CSV (o 1_extrair.py insere "na
+--    ordem", com INSERT INTO tabela VALUES (...)).
+*/
+
+DROP TABLE IF EXISTS silver_viagem;
+CREATE TABLE silver_viagem (
+    id_viagem              VARCHAR(20) PRIMARY KEY NOT NULL,
+    num_proposta           VARCHAR(20),
+    situacao               VARCHAR(50),
+    viagem_urgente         VARCHAR(5),
+    justificativa_viagem   VARCHAR(255),
+    cod_orgao_superior     VARCHAR(20),
+    nome_orgao_superior    VARCHAR(255) NOT NULL,
+    cod_orgao_solicitante  VARCHAR(20),
+    nome_orgao_solicitante VARCHAR(255),
+    nome_viajante          VARCHAR(255),
+    cpf_viajante           VARCHAR(15),
+    cargo                  VARCHAR(255),
+    funcao                 VARCHAR(255),
+    descricao_funcao       VARCHAR(255),
+    data_inicio            DATE,
+    data_fim               DATE,
+    destinos               VARCHAR(4000),
+    motivo                 VARCHAR(4000),
+    valor_diarias          DECIMAL(10,2) CHECK(valor_diarias >= 0),
+    valor_passagens        DECIMAL(10,2),
+    valor_devolucao        DECIMAL(10,2),
+    valor_outros_gastos    DECIMAL(10,2),
+    valor_total            DECIMAL(10,2),
+    duracao_dias           INT
+) ENGINE=InnoDB;
+
+/* INSERT
+CREATE TABLE silver_viagem (
+    id_viagem              VARCHAR(20) PRIMARY KEY NOT NULL,
+    num_proposta           VARCHAR(20),
+    situacao               VARCHAR(50),
+    viagem_urgente         VARCHAR(5),
+    justificativa_viagem   VARCHAR(255)
+    cod_orgao_superior     VARCHAR(20),
+    nome_orgao_superior    VARCHAR(255) NOT NULL,
+    cod_orgao_solicitante  VARCHAR(20),
+    nome_orgao_solicitante VARCHAR(255),
+    nome_viajante          VARCHAR(255),
+    cpf_viajante           VARCHAR(15),
+    cargo                  VARCHAR(255),
+    funcao                 VARCHAR(255),
+    descricao_funcao       VARCHAR(255),
+    data_inicio            STR_TO_DATE(data_inicio, '%d-%m-%Y'),
+    data_fim               STR_TO_DATE(data_fim, '%d-%m-%Y'),
+    destinos               VARCHAR(4000),
+    motivo                 VARCHAR(4000),
+    valor_diarias          DECIMA(10,2) CHECK(valor_diarias >= 0),
+    valor_passagens        DECIMA(10,2),
+    valor_devolucao        DECIMA(10,2),
+    valor_outros_gastos    DECIMA(10,2),
+    (valor_diarias + valor_passagens + valor_outros_gastos - valor_devolucao) as valor_total            DECIMA(10,2),
+    datediff(data_fim - data_inicio) as duracao_dias           INT
+)
+*/
+
+DROP TABLE IF EXISTS raw_viagem;
+CREATE TABLE raw_viagem (
+    id_viagem              VARCHAR(20),
+    num_proposta           VARCHAR(20),
+    situacao               VARCHAR(50),
+    viagem_urgente         VARCHAR(5),
+    justificativa_viagem   VARCHAR(255),
+    cod_orgao_superior     VARCHAR(20),
+    nome_orgao_superior    VARCHAR(255),
+    cod_orgao_solicitante  VARCHAR(20),
+    nome_orgao_solicitante VARCHAR(255),
+    nome_viajante          VARCHAR(255),
+    cpf_viajante           VARCHAR(15),
+    cargo                  VARCHAR(255),
+    funcao                 VARCHAR(255),
+    descricao_funcao       VARCHAR(255),
+    data_inicio            VARCHAR(10),
+    data_fim               VARCHAR(10),
+    destinos               VARCHAR(4000),
+    motivo                 VARCHAR(4000),
+    valor_diarias          VARCHAR(15),
+    valor_passagens        VARCHAR(15),
+    valor_devolucao        VARCHAR(15),
+    valor_outros_gastos    VARCHAR(15)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS raw_passagem;
+CREATE TABLE raw_passagem (
+    id_viagem            VARCHAR(20),
+    num_proposta         VARCHAR(20),
+    meio_transporte      VARCHAR(20),
+    meio_transporte      VARCHAR(50),
+    pais_origem_ida      VARCHAR(60),
+    uf_origem_ida        VARCHAR(40),
+    cidade_origem_ida    VARCHAR(80),
+    pais_destino_ida     VARCHAR(60),
+    uf_destino_ida       VARCHAR(40),
+    cidade_destino_ida   VARCHAR(80),
+    pais_origem_volta    VARCHAR(60),
+    uf_origem_volta      VARCHAR(40),
+    cidade_origem_volta  VARCHAR(80),
+    pais_destino_volta   VARCHAR(60),
+    uf_destino_volta     VARCHAR(40),
+    cidade_destino_volta VARCHAR(80),
+    valor_passagem       VARCHAR(15),
+    taxa_servico         VARCHAR(15),
+    data_emissao         VARCHAR(10),
+    hora_emissao         VARCHAR(10)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS raw_pagamento;
+CREATE TABLE raw_pagamento (
+    id_viagem           VARCHAR(20),
+    num_proposta        VARCHAR(20),
+    cod_orgao_superior  VARCHAR(20),
+    nome_orgao_superior VARCHAR(255),
+    cod_orgao_pagador   VARCHAR(20),
+    nome_orgao_pagador  VARCHAR(255),
+    cod_un_pagadora     VARCHAR(20),
+    nome_un_pagadora    VARCHAR(255),
+    tipo_pagamento      VARCHAR(50),
+    valor               VARCHAR(15)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS raw_trecho;
+CREATE TABLE raw_trecho (
+    id_viagem        VARCHAR(20),
+    num_proposta     VARCHAR(20),
+    sequencia_trecho VARCHAR(1),
+    origem_data      VARCHAR(10),
+    origem_pais      VARCHAR(60),
+    origem_uf        VARCHAR(40),
+    origem_cidade    VARCHAR(80),
+    destino_data     VARCHAR(10),
+    destino_pais     VARCHAR(60),
+    destino_uf       VARCHAR(40),
+    destino_cidade   VARCHAR(80),
+    meio_transporte  VARCHAR(50),
+    numero_diarias   VARCHAR(15),
+    missao           VARCHAR(3)
+) ENGINE=InnoDB;
+
+
+/*
+-- ===========================================================================
+-- 3) CAMADA SILVER  (dados tipados + integridade referencial)
+-- ===========================================================================
+*/
+
+DROP TABLE IF EXISTS silver_viagem;
+CREATE TABLE silver_viagem (
+    id_viagem              VARCHAR(20) PRIMARY KEY NOT NULL,
+    num_proposta           VARCHAR(20),
+    situacao               VARCHAR(50),
+    viagem_urgente         VARCHAR(5),
+    justificativa_viagem   VARCHAR(255),
+    cod_orgao_superior     VARCHAR(20),
+    nome_orgao_superior    VARCHAR(255) NOT NULL,
+    cod_orgao_solicitante  VARCHAR(20),
+    nome_orgao_solicitante VARCHAR(255),
+    nome_viajante          VARCHAR(255),
+    cpf_viajante           VARCHAR(15),
+    cargo                  VARCHAR(255),
+    funcao                 VARCHAR(255),
+    descricao_funcao       VARCHAR(255),
+    data_inicio            DATE,
+    data_fim               DATE,
+    destinos               VARCHAR(4000),
+    motivo                 VARCHAR(4000),
+    valor_diarias          DECIMAL(10,2) CHECK(valor_diarias >= 0),
+    valor_passagens        DECIMAL(10,2),
+    valor_devolucao        DECIMAL(10,2),
+    valor_outros_gastos    DECIMAL(10,2),
+    valor_total            DECIMAL(10,2),
+    duracao_dias           INT
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS silver_passagem;
+CREATE TABLE silver_passagem (
+    id_passagem        INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    id_viagem          VARCHAR(20) NOT NULL,
+    meio_transporte    VARCHAR(50),
+    pais_origem_ida    VARCHAR(60),
+    uf_origem_ida      VARCHAR(40),
+    cidade_origem_ida  VARCHAR(80),
+    pais_destino_ida   VARCHAR(60),
+    uf_destino_ida     VARCHAR(40),
+    cidade_destino_ida VARCHAR(80),
+    valor_passagem     DECIMAL(10,2) CHECK(valor_passagem >= 0),
+    taxa_servico       DECIMAL(10,2) CHECK(taxa_servico >= 0),
+    data_emissao       DATE,
+    FOREIGN KEY (id_viagem) REFERENCES silver_viagem(id_viagem)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS silver_pagamento;
+CREATE TABLE silver_pagamento (
+    id_pagamento       INT,
+    id_viagem          VARCHAR(20),
+    num_proposta       VARCHAR(20),
+    nome_orgao_pagador VARCHAR(255),
+    nome_ug_pagadora   VARCHAR(255),
+    tipo_pagamento     VARCHAR(50) NOT NULL,
+    valor              DECIMAL(10,2) CHECK(valor >= 0),
+    FOREIGN KEY (id_viagem) REFERENCES silver_viagem(id_viagem)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS silver_trecho;
+CREATE TABLE silver_trecho (
+    id_trecho        INT,
+    id_viagem        VARCHAR(20),
+    sequencia_trecho INT,
+    origem_data      DATE,
+    origem_uf        VARCHAR(40),
+    origem_cidade    VARCHAR(80),
+    destino_data     DATE,
+    destino_uf       VARCHAR(40),
+    destino_cidade   VARCHAR(80),
+    meio_transporte  VARCHAR(50),
+    numero_diarias   DECIMAL(10,2),
+    FOREIGN KEY (id_viagem) REFERENCES silver_viagem(id_viagem)
+) ENGINE=InnoDB;
