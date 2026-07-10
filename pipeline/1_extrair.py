@@ -2,13 +2,10 @@
 1_extrair.py  -  FASE 1: Extracao e Camada RAW
 ----------------------------------------------
 Passo a passo simples:
-  1. Localiza o arquivo cafeteria.zip que foi baixado para a pasta data/.
+  1. Localiza o arquivo viagens_2025_6meses.zip que foi baixado para a pasta data/.
   2. Le os 2 CSVs de dentro do .zip (vendas, itens).
   3. Insere os dados, SEM nenhuma alteracao, nas 2 tabelas RAW do MySQL.
 
-ANTES DE RODAR: baixe o "cafeteria.zip" (link do Drive da escola) e coloque-o
-dentro da pasta "data/" deste projeto:
-    treino_cafeteria/data/cafeteria.zip
 
 A camada RAW e uma copia fiel do CSV: todas as colunas sao texto (VARCHAR).
 As tabelas ja foram criadas pelo script 0_criar_banco.txt.
@@ -19,6 +16,9 @@ import zipfile
 import gdown
 import pandas as pd
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import config
 import banco
 
@@ -31,7 +31,7 @@ def baixar_zip():
     caminho = config.PASTA_DADOS / "viagens_2025_6meses.zip"
     if not caminho.exists():
         print("[0/3] Baixando o arquivo do Drive...")
-        gdown.download(url, str(caminho), quiet=False)
+        gdown.download(id=config.DRIVE_FILE_ID, output=str(caminho), quiet=False)
     else:
         print("[0/3] Arquivo ja existe:", caminho.name)
     return caminho
@@ -98,7 +98,7 @@ def main():
         baixar_zip()  # baixa o arquivo do Drive, caso nao exista
         caminho_zip = localizar_zip()
         print("[2/3] Abrindo o arquivo zip...")
-        print("[3/3] Carregando as 2 tabelas RAW...")
+        print("[3/3] Carregando as 4 tabelas RAW...")
         with zipfile.ZipFile(caminho_zip) as zip_aberto:
             for arquivo in config.ARQUIVOS.values():
                 carregar_csv(conexao, zip_aberto, arquivo["csv"], arquivo["tabela_raw"])

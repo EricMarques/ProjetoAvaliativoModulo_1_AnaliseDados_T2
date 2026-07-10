@@ -51,6 +51,7 @@ MYSQL_CONFIG = {
     "user": os.getenv("USER"),
     "password": os.getenv("PASSWORD"),
     "database": os.getenv("DB"),
+    "ssl_disabled": True,
 }
 
 # ---------------------------------------------------------------------------
@@ -63,7 +64,7 @@ DRIVE_FILE_ID = "1Sru-TYSYo-cn-L9WW2DUwhyIUdkM3fIe"
 
 # Tamanho do bloco de leitura/insercao (numero de linhas por vez).
 
-TAMANHO_BLOCO = 50_000
+TAMANHO_BLOCO = 10_000
 
 # ---------------------------------------------------------------------------
 # Mapeamento: cada arquivo CSV dentro do .zip -> tabela RAW correspondente
