@@ -5,6 +5,7 @@ import banco
 from mysql.connector import Error
 
 # TABELAS RAW
+
 raw_viagem = """
     (
         id_viagem              VARCHAR(20),
@@ -167,7 +168,16 @@ silver_trecho = """
         FOREIGN KEY (id_viagem) REFERENCES silver_viagem(id_viagem)
     ) ENGINE=InnoDB;
 """
-
+table_definitions = {
+    'raw_viagem': raw_viagem,
+    'raw_passagem': raw_passagem,
+    'raw_pagamento': raw_pagamento,
+    'raw_trecho': raw_trecho,
+    'silver_viagem': silver_viagem,
+    'silver_passagem': silver_passagem,
+    'silver_pagamento': silver_pagamento,
+    'silver_trecho': silver_trecho
+}
 
 def drop_table(table_name):
     conn = None
@@ -187,6 +197,7 @@ def create_table(table_name, fields):
     conn = None
     create_table = f'CREATE TABLE {table_name} {fields}'
     try:
+        drop_table(table_name)
         conn = banco.conectar()
         cursor = conn.cursor()
         cursor.execute(create_table)
@@ -197,29 +208,10 @@ def create_table(table_name, fields):
         if conn is not None and conn.is_connected():
             conn.close()
 
+def main():
+    for table_name, fields in table_definitions.items():
+        create_table(table_name, fields)
+        print(str.center(f'========== CRIAÇÃO DA TABELA {table_name.upper()} ==========', 80, '='))
 
-print('========== CRIAÇÃO DAS TABELAS RAW ==========')
-drop_table('raw_viagem')
-create_table('raw_viagem', raw_viagem)
-print('===========================================')
-drop_table('raw_passagem')
-create_table('raw_passagem', raw_passagem)
-print('===========================================')
-drop_table('raw_pagamento')
-create_table('raw_pagamento', raw_pagamento)
-print('===========================================')
-drop_table('raw_trecho')
-create_table('raw_trecho', raw_trecho)
-
-print('========== CRIAÇÃO DAS TABELAS SILVER ==========')
-drop_table('silver_viagem')
-create_table('silver_viagem', silver_viagem)
-print('===========================================')
-drop_table('silver_passagem')
-create_table('silver_passagem', silver_passagem)
-print('===========================================')
-drop_table('silver_pagamento')
-create_table('silver_pagamento', silver_pagamento)
-print('===========================================')
-drop_table('silver_trecho')
-create_table('silver_trecho', silver_trecho)
+if __name__ == '__main__':
+    main()
