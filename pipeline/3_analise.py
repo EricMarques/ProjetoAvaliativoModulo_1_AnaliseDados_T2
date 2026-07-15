@@ -121,17 +121,38 @@ def main():
         criar_gold(conexao, cursor, "top3_destinos", sql)
         df = consultar_gold(conexao, "top3_destinos")
         print(df)
-        gerar_grafico(
-            dataframe=df,
-            eixo_x="destinos",
-            eixo_y="custo_medio",
-            titulo="Top 3 destinos com maior custo médio",
-            xlabel="Custo Médio (R$)",
-            ylabel="Destino",
-            nome_imagem="02_destinos.png",
-            horizontal=True,
-            tamanho=(18, 8),
-        )
+        
+        # Quebrar destinos em múltiplas linhas para melhor legibilidade
+        destinos_formatados = []
+        for destino in df["destinos"]:
+            # Quebra a string a cada 50 caracteres
+            destino_quebrado = '\n'.join([destino[i:i+50] for i in range(0, len(destino), 50)])
+            destinos_formatados.append(destino_quebrado)
+        
+        plt.figure(figsize=(14, 8))
+        plt.barh(range(len(df)), df["custo_medio"], color='steelblue', height=0.6)
+        plt.yticks(range(len(df)), destinos_formatados, fontsize=10)
+        plt.xlabel("Custo Médio (R$)", fontsize=12, fontweight='bold')
+        plt.ylabel("Destino", fontsize=12, fontweight='bold')
+        plt.title("Top 3 Destinos com Maior Custo Médio", fontsize=14, fontweight='bold', pad=20)
+        
+        # Adicionar valores das barras
+        for i, valor in enumerate(df["custo_medio"]):
+            plt.text(
+                valor,
+                i,
+                f"  R$ {valor:,.2f}",
+                va="center",
+                fontsize=10,
+                fontweight='bold'
+            )
+        
+        plt.gca().invert_yaxis()
+        plt.grid(axis='x', alpha=0.3)
+        plt.tight_layout()
+        plt.savefig(IMAGES_DIR / "02_destinos.png", dpi=300, bbox_inches="tight")
+        plt.show()
+        plt.close()
 
         # 3 - Viagem de maior duração e seu custo total
         sql = """

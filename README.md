@@ -1,262 +1,406 @@
-# Análise de Dados com Python [T2]
+# 📊 Análise de Dados com Python [T2]
+## Projeto Avaliativo - Módulo 1 - Semana 13
 
-## Projeto Avaliativo - Módulo 1
+**Aluno:** Eric Felipe Barros Marques  
+**Turma:** Análise de Dados com Python [T2]  
+**Data de Entrega:** 20/07/2026 às 22h  
+**Status:** ✅ Projeto Completo
 
-### Aluno: Eric Felipe Barros Marques
-### Turma: Análise de Dados com Python [T2]
+---
 
-### 1. CONTEXTUALIZAÇÃO
+## 📋 Índice
+1. [Contextualização](#1-contextualização)
+2. [Desafio e Perguntas de Negócio](#2-desafio-e-perguntas-de-negócio)
+3. [Resultados Esperados](#3-resultados-esperados-entrega)
+4. [Requisitos da Aplicação](#4-requisitos-da-aplicação)
+5. [Tecnologias Utilizadas](#5-tecnologias-utilizadas)
+6. [Arquitetura Medallion](#6-arquitetura-medallion)
+7. [Estrutura do Projeto](#7-estrutura-do-projeto)
+8. [Instalação e Execução](#8-instalação-e-execução)
+9. [Análises e Gráficos](#9-análises-e-gráficos)
+10. [Conclusões](#10-conclusões)
+11. [Sugestões Futuras](#11-sugestões-futuras)
 
-Você está desenvolvendo uma Análise Exploratória de Dados (AED) aplicada ao varejo para aprender como transformar dados brutos em informações úteis.
+---
 
-A base “Varejo” contém registros reais de compras (datas, clientes, produtos, categorias e valores). Aprender a verificar qualidade, limpar e sumarizar esses dados é uma habilidade prática essencial para quem trabalha com BI e Visualização de Dados.<br>
-Neste mini-projeto você vai praticar tarefas comuns no trabalho: identificar problemas nos dados (valores nulos, tipos incorretos, duplicados), tratar esses problemas com ferramentas como pandas e gerar estatísticas  simples e funções de agrupamento, para responder perguntas operacionais (quem compra mais, quais categorias vendem mais, como variam as vendas ao longo do tempo).
+## 1. CONTEXTUALIZAÇÃO
 
-O objetivo educacional é que, ao final, você saiba preparar uma base para análises mais avançadas ou para alimentar um dashboard: entender os dados, limpá-los, extrair estatísticas descritivas e comunicar os principais insights de forma objetiva.
+Atualmente, a **transparência pública** permite a geração de grandes volumes de dados abertos. Um exemplo é a base de **Viagens a Serviço do Portal da Transparência do Governo Federal**.
 
- 
-### 2. DESAFIO
+Este projeto **simula uma consultoria de dados** contratada pelo governo para aumentar a transparência dos gastos públicos com viagens. Os dados chegam **brutos, desorganizados**, e a equipe precisa avaliar como anda o fluxo das informações.
 
-Entregar um script em Python que realize uma **Análise Exploratória** da base `viagens_2025_6meses` seguindo etapas claras, documentadas e reproduzíveis.
+### Objetivo Principal
 
-#### Etapas obrigatórias
+Construir um **pipeline de dados completo (ETL)** seguindo a **Arquitetura Medallion** que:
 
-- Carregar a base Varejo.csv com pandas e mostrar: número de registros, colunas e tipos de dados
-- Verificar e reportar ao menos dois problemas básicos: valores nulos por coluna, duplicatas, possíveis inconsistências( ex.: datas inválidas ou categorias vazias)
-- Fazer as três etapas de limpeza mínima necessária: remover ou imputar nulos (explicar a escolha), eliminar duplicatas relevantes e ajustar tipos de dados (ex.: converter coluna DATA para datetime)
-- Gerar estatísticas descritivas básicas para a coluna de número de filhos do cliente (média, mediana, desvio padrão, moda, máximo, mínimo, contagem, quartis)
-- Explorar padrões de agrupamento **com pelo menos dois agrupamentos** (por exemplo: gênero com mais vendas, compras), usando groupby() ou pivot_table().
-- Produzir um pequeno bloco de conclusões **(3–6 tópicos)** com os principais insights obtidos e possíveis problemas remanescentes na base.
+✅ Baixe automaticamente dados da fonte oficial (Google Drive)  
+✅ Preserve o histórico original na camada Raw (auditoria e rastreabilidade)  
+✅ Limpe, normalize e transforme os dados na camada Silver  
+✅ Responda perguntas de negócio com análises e visualizações na camada Gold  
 
-#### Requisitos técnicos mínimos
+### Competência Desenvolvida
 
-- O script deve ser executável em VsCode ou Google Colab (arquivo .py).
+Dominar um **pipeline de dados (ETL)** e a **Arquitetura Medallion** com Python e SQL é uma das competências mais valorizadas na área de dados, pois permite utilização eficiente e segura.
 
-- Usar pandas; outras bibliotecas são opcionais (NumPy, Matplotlib, Seaborn).
+---
 
+## 2. DESAFIO E PERGUNTAS DE NEGÓCIO
 
-### 6. Execussão do projeto
-### Tecnologias utilizadas
-- Python
-- Pandas
+O pipeline foi desenvolvido para responder às seguintes **8 perguntas de negócio**:
 
-#### Importação da base de dados
+| # | Pergunta | Análise |
+|---|----------|---------|
+| 1️⃣ | Quais os **5 órgãos com maior custo total**? | Identifica principais gastadores |
+| 2️⃣ | Quais os **3 destinos com maior custo médio** por viagem? | Revela destinos mais caros |
+| 3️⃣ | Qual a **viagem de maior duração** e seu custo? | Detecta outliers de tempo |
+| 4️⃣ | Qual o **tipo de pagamento com maior valor médio**? | Compara modalidades |
+| 5️⃣ | Qual o **meio de transporte mais usado** nos trechos? | Analisa mobilidade preferida |
+| 6️⃣ | Qual **UF de destino aparece em mais trechos**? | Concentração geográfica |
+| 7️⃣ | Qual **órgão pagou mais** no total? | Principal pagador |
+| 8️⃣ | Qual o **percentual de viagens com dados sigilosos**? | Indicador de transparência |
 
-A base de dados será baixada de forma automática onde esta está alocada em um diretório do Google Drive
+---
 
-### Execução do projeto
-Primeiramente deve-se instalar as dependências utilizando o comando `pip install requirements.txt`
+## 3. RESULTADOS ESPERADOS (ENTREGA)
 
-### Limpeza de Dados
-Para a limpeza dos dados foram efetuados os seguintes procedimentos:
+Ao final do projeto, foi construído um **pipeline completo** que:
 
-- Remoção de colunas totalmente vazias (Unnamed: 10 - 13);
-- Identificação e remoção de registros duplicados;
-- Limpeza de linhas onde as colunas PR_CAT e PR_NOME possuíam valor #N/D
-- Conversão das informações da coluna `data` de string para date.
-- Padronização dos textos das colunas PR_CAT e PR_NOME pata str.title
+### ✅ Fase 1: Extração e Camada Raw
+- Baixa dados de Viagens a Serviço direto da fonte oficial (Google Drive)
+- Preserva o dado original fielmente, garantindo rastreabilidade e auditoria
+- 4 tabelas Raw com todas as colunas VARCHAR
 
+### ✅ Fase 2: Transformação e Camada Silver
+- Limpa e organiza os dados com:
+  - Tipagem correta (DECIMAL, DATE, VARCHAR, INT)
+  - Integridade referencial entre as tabelas (PK, FK)
+  - Eliminação de inconsistências, duplicidades e erros de formato
+  - **8 constraints** (NOT NULL, CHECK, UNIQUE) distribuídos entre as 4 tabelas
 
-## Análise Exploratória dos dados da base `viagens_2025_6meses`
+### ✅ Fase 3: Análise e Camada Gold
+- Responde perguntas de negócio reais com:
+  - Consultas SQL com agregações (JOIN + GROUP BY)
+  - Tabelas e VIEWs criadas no MySQL
+  - Gráficos de dataviz com elementos estruturais (título, eixos, legendas)
+  - Análises apoiadas em evidências dos dados
 
-O foco desta análise é identificar possíveis anomalias nos dados, efetuar tratamento  e limpeza destes dados inconsistentes.
+---
 
-A base de dados refere-se a uma relação de compras efetuadas por clientes.
+## 4. REQUISITOS DA APLICAÇÃO
 
-### Perguntas de negócios a serem respondidas:
-ar 
+### Fase 0 - Banco e Tabelas (`0_criar_banco.sql`)
 
+✅ Criar o database `viagens_analise`  
+✅ Criar **4 tabelas Raw** (todas as colunas VARCHAR, sem constraints):
+- `raw_viagem`, `raw_passagem`, `raw_pagamento`, `raw_trecho`
 
-### Informações sobre a base de dados
-#### Dimensão
-<table>
-  <thead>
-    <tr>
-        <th>Nº</th>
-        <th>Informativo</th>
-        <th>Quantidade</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-        <td>1</td>
-        <td>Linhas</td>
-        <td>830000</td>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>Colunas</td>
-        <td>14</td>
-    </tr>
-  </tbody>
-</table>
+✅ Criar **4 tabelas Silver** (tipadas, com PK, FK e constraints):
+- `silver_viagem`, `silver_passagem`, `silver_pagamento`, `silver_trecho`
 
-#### Tipos de dados
-<table>
-  <thead>
-    <tr>
-        <th colspan="2">TIPOS DE DADOS</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-        <td>DATA</td>
-        <td>str</td>
-    </tr>
-    <tr>
-        <td>CO_ID</td>
-        <td>int64</td>
-    </tr>
-        <tr>
-        <td>CL_ID</td>
-        <td>int64</td>
-    </tr>
-        <tr>
-        <td>CL_GENERO</td>
-        <td>str</td>
-    </tr>
-        <tr>
-        <td>CL_EC</td>
-        <td>int64</td>
-    </tr>
-        <tr>
-        <td>CL_FLH</td>
-        <td>int64</td>
-    </tr>
-        <tr>
-        <td>CL_SEG</td>
-        <td>str</td>
-    </tr>
-        <tr>
-        <td>PR_ID</td>
-        <td>int64</td>
-    </tr>
-        <tr>
-        <td>PR_CAT</td>
-        <td>str</td>
-    </tr>
-        <tr>
-        <td>PR_NOME</td>
-        <td>str</td>
-    </tr>
-    <tr>
-        <td>Unnamed: 10</td>
-        <td>float64</td>
-    </tr>
-    <tr>
-        <td>Unnamed: 11</td>
-        <td>float64</td>
-    </tr>
-    <tr>
-        <td>Unnamed: 12</td>
-        <td>float64</td>
-    </tr>
-    <tr>
-        <td>Unnamed: 13</td>
-        <td>float64</td>
-    </tr>
-  </tbody>
-</table>
+**Constraints obrigatórios (8 no total):**
 
-#### Colunas totalmente vazias(lixo)
-Unnamed: 10, Unnamed: 11, Unnamed: 12 e Unnamed: 13
+| Tabela | Constraint 1 | Constraint 2 |
+|--------|-------------|-------------|
+| `silver_viagem` | NOT NULL `nome_orgao_superior` | CHECK `valor_diarias >= 0` |
+| `silver_passagem` | CHECK `valor_passagem >= 0` | CHECK `taxa_servico >= 0` |
+| `silver_pagamento` | NOT NULL `tipo_pagamento` | CHECK `valor >= 0` |
+| `silver_trecho` | UNIQUE `(id_viagem, sequencia_trecho)` | CHECK `numero_diarias >= 0` |
 
-#### Registros nulos
-<table>
-  <thead>
-    <tr>
-        <th>Tipo de dado</th>
-        <th>Qtd. Nulos</th>
-        <th>%</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-        <td>DATA</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-    <tr>
-        <td>CO_ID</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-        <tr>
-        <td>CL_ID</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-        <tr>
-        <td>CL_GENERO</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-        <tr>
-        <td>CL_EC</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-        <tr>
-        <td>CL_FLH</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-        <tr>
-        <td>CL_SEG</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-        <tr>
-        <td>PR_ID</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-        <tr>
-        <td>PR_CAT</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-        <tr>
-        <td>PR_NOME</td>
-        <td>0</td>
-        <td>0.0</td>
-    </tr>
-    <tr>
-        <td>Unnamed: 10</td>
-        <td>8300000</td>
-        <td>100.00</td>
-    </tr>
-    <tr>
-        <td>Unnamed: 11</td>
-        <td>8300000</td>
-        <td>100.00</td>
-    </tr>
-    <tr>
-        <td>Unnamed: 12</td>
-        <td>8300000</td>
-        <td>100.00</td>
-    </tr>
-    <tr>
-        <td>Unnamed: 13</td>
-        <td>8300000</td>
-        <td>100.00</td>
-    </tr>
-  </tbody>
-</table>
+### Fase 1 - Extração e Camada Raw (`1_extrair.py`)
 
-#### Duplicidades
-Foram identificadas 96.553 linhas duplicadas (11.63% da base).
+✅ Baixar arquivo `.zip` do Google Drive automaticamente  
+✅ Ler os **4 CSVs** em blocos:
+- `2025_Viagem.csv`, `2025_Pagamento.csv`, `2025_Passagem.csv`, `2025_Trecho.csv`
 
-Considerando que a recorrência de um mesmo produto em um pedido pode indicar a compra de múltiplas unidades, esses registros foram mantidos para evitar impactos nas análises de vendas e comportamento de consumo.
+✅ Carregar nas tabelas Raw **sem alterar conteúdo**  
+✅ Processo **idempotente** (TRUNCATE antes de carregar)  
+✅ **Resiliente** com try/except para tratamento de erros  
+✅ Configuração: Separador `;` | Encoding `latin-1` | Decimal `,` | Data `DD/MM/AAAA`
 
-### Análises Exploratórias:
-#### Análises
+### Fase 2 - Transformação e Camada Silver (`2_transformar.py`)
 
+✅ Copiar dados de Raw para Silver **convertendo tipos:**
+- Texto → DECIMAL (ex.: `"1.234,50"` → `1234.50`)
+- Texto → DATE (ex.: `"30/06/2025"` → `2025-06-30`)
+- Campos vazios → NULL
 
+✅ Respeitar **integridade referencial** (PK, FK)  
+✅ Calcular colunas derivadas:
+- `valor_total = diarias + passagens + outros - devoluções`
+- `duracao_dias = DATEDIFF(data_fim, data_inicio)`
 
+✅ Validar dados (CHECK constraints)
 
-### Conclusões
-- CONCLUSÃO 1
+### Fase 3 - Camada Gold (`3_analise.ipynb`)
 
-### Sugestões para Análises Futuras
-- SUGESTÕES 1
+✅ Responder **6+ perguntas de negócio** com:
+- Consultas SQL com agregações
+- Tabelas e VIEWs no MySQL
+- Gráficos com dataviz aplicado
+
+✅ Construir **camada Gold agregada** com:
+- Junção de tabelas (JOIN)
+- Agrupamento de dados (GROUP BY)
+- Visualizações profissionais
+
+---
+
+## 5. TECNOLOGIAS UTILIZADAS
+
+| Tecnologia |  Propósito |
+|------------|----------|
+| **Python** |  Linguagem principal |
+| **MySQL** | Banco de dados relacional |
+| **Pandas** | Manipulação de dados |
+| **Matplotlib** | Geração de gráficos |
+| **GDown** | Download do Google Drive |
+| **mysql-connector-python** |  Conexão MySQL |
+| **python-dotenv** | Gerenciamento de .env |
+
+---
+
+## 6. ARQUITETURA MEDALLION
+
+A arquitetura segue o padrão **Medallion** (3 camadas) amplamente utilizado em Data Engineering:
+
+```
+                    CSV (Fonte Oficial)
+                           ↓
+            ╔═══════════════╩═══════════════╗
+            ║                               ║
+            ↓                               ↓
+       CAMADA RAW                    CAMADA SILVER
+    (Dados Brutos)              (Dados Limpos & Tipados)
+     4 tabelas                       4 tabelas
+   (todas VARCHAR)           (VARCHAR, DECIMAL, DATE)
+     Sem constraints          (PK, FK, Constraints)
+   ✓ Auditoria                       ↓
+   ✓ Rastreabilidade          Validações
+   ✓ Histórico fiel           Conversões
+                              Cálculos
+                                    ↓
+                              CAMADA GOLD
+                         (Análises & Gráficos)
+                          Agregações
+                          JOINs
+                          GROUP BY
+                          VIEWs
+                          📊 Gráficos
+```
+
+---
+
+## 7. ESTRUTURA DO PROJETO
+
+```
+Projeto Avaliativo Modulo 1/
+│
+├── 📄 .env                      # Credenciais "Oficiais" do Ambiente/MySQL
+├── 📄 .env.example              # Modelo de .env (commitar)
+├── 📄 .gitignore                # Ignora .env, .zip, .csv, data/
+│
+├── 🐍 config.py                 # Parâmetros + leitura .env
+├── 🐍 banco.py                  # Funções conexão MySQL
+├── 📄 requirements.txt          # Dependências
+│
+├── 🐍 0_criar_banco.py          # Criação database + 8 tabelas
+├── 🐍 1_extrair.py              # Fase 1: Download + Carga RAW
+├── 🐍 2_transformar.py          # Fase 2: Limpeza → SILVER
+├── 🐍 3_analise.py              # Fase 3: Análise → GOLD
+├── 🐍 auditoria.py              # Dados sobre toda base de dados(Demora muito para executar) 
+│
+├── 📁 data/                     # Dados (ignorado no git)
+│   └── viagens_2025_6meses.zip
+│
+├── 📁 images/                   # Gráficos gerados
+│   ├── 01_top5_orgaos.png
+│   ├── 02_top3_destinos.png
+│   ├── 03_maior_duracao.png
+│   ├── 04_tipo_pagamento.png
+│   ├── 05_meio_transporte.png
+│   ├── 06_destino_uf.png
+│   └── 07_orgao_pagador.png
+│   └── 08_sigilo_nome_viajante.png
+│
+└── 📄 README.md                 # Arquivo contendo informações do projeto
+```
+
+---
+
+## 8. INSTALAÇÃO E EXECUÇÃO
+
+### Pré-requisitos
+
+- Python 3.8+
+- MySQL  8.0+
+- Git
+
+### Passo 1: Clonar o Repositório
+
+```bash
+git clone https://github.com/EricMarques/ProjetoAvaliativoModulo_1_AnaliseDados_T2.git
+cd Projeto\ Avaliativo\ Modulo\ 1
+```
+
+### Passo 2: Configurar Variáveis de Ambiente
+
+Copie o arquivo `.env.example` para `.env` e configure:
+
+```bash
+cp .env.example .env
+```
+
+Edite `.env` com suas credenciais:
+
+```
+MYSQL_HOST=localhost
+MYSQL_USER=root
+MYSQL_PASSWORD=sua_senha
+MYSQL_DATABASE=viagens_analise
+DRIVE_FILE_ID=seu_id_arquivo_drive
+```
+
+### Passo 3: Instalar Dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### Passo 4: Executar o Pipeline
+
+**Criar banco e tabelas:**
+```bash
+# Execute o SQL em seu cliente MySQL
+mysql -u root -p < 0_criar_banco.sql
+```
+
+**Fase 1 - Extrair (RAW):**
+```bash
+python 1_extrair.py
+```
+
+**Fase 2 - Transformar (SILVER):**
+```bash
+python 2_transformar.py
+```
+
+**Fase 3 - Analisar (GOLD):**
+```bash
+python 3_analise.py
+```
+
+---
+
+## 9. ANÁLISES E GRÁFICOS
+
+### Pergunta 1: Top 5 Órgãos com Maior Custo
+📊 **Gráfico:** Barras horizontais  
+📁 **Arquivo:** `01_top5_orgaos.png`  
+📌 **Insight:** Identifica principais gastadores
+<!--![Top 5 Órgãos com Maior Custo](images\01_top5_orgaos.png "Top 5 Órgãos com Maior Custo")-->
+<img src="images\01_top5_orgaos.png" title="Top 5 Órgãos com Maior Custo" width="1200" height="600">
+
+### Pergunta 2: Top 3 Destinos com Maior Custo Médio
+📊 **Gráfico:** Barras horizontais  
+📁 **Arquivo:** `02_top3_destinos.png`  
+📌 **Insight:** Revela destinos mais caros
+<!--![Top 3 Destinos com Maior Custo Médio](images\02_destinos.png "Top 3 Destinos com Maior Custo Médio")-->
+<img src="images\02_destinos.png" title="Top 3 Destinos com Maior Custo Médio" width="1200" height="700"    >
+
+### Pergunta 3: Viagem de Maior Duração
+📊 **Gráfico:** Barra única  
+📁 **Arquivo:** `03_maior_duracao.png`  
+📌 **Insight:** Detecta outliers
+<!--![Viagem de Maior Duração](images\03_maior_duracao.png "Viagem de Maior Duração")-->
+<img src="images\03_maior_duracao.png" title="Viagem de Maior Duração" width="1200" height="700"    >
+
+### Pergunta 4: Tipo de Pagamento com Maior Valor Médio
+📊 **Gráfico:** Barras verticais  
+📁 **Arquivo:** `04_tipo_pagamento.png`  
+📌 **Insight:** Compara modalidades de pagamento
+<!--![Tipo de Pagamento com Maior Valor Médio](images\04_tipo_pagamento.png "Tipo de Pagamento com Maior Valor Médio")-->
+<img src="images\04_tipo_pagamento.png" title="Tipo de Pagamento com Maior Valor Médio" width="1200" height="700"    >
+
+### Pergunta 5: Meio de Transporte Mais Usado
+📊 **Gráfico:** Barras verticais  
+📁 **Arquivo:** `05_meio_transporte.png`  
+📌 **Insight:** Aéreo vs. Terrestre vs. Marítimo
+<!--![Meio de Transporte Mais Usado](images\05_meio_transporte.png "Meio de Transporte Mais Usado")-->
+<img src="images\05_meio_transporte.png" title="Meio de Transporte Mais Usado" width="1200" height="700"    >
+
+### Pergunta 6: Top 10 UFs de Destino
+📊 **Gráfico:** Barras horizontais  
+📁 **Arquivo:** `06_destino_uf.png`  
+📌 **Insight:** Concentração geográfica
+<!--![Top 10 UFs de Destino](images\06_destino_uf.png "Top 10 UFs de Destino")-->
+<img src="images\06_destino_uf.png" title="Top 10 UFs de Destino" width="1200" height="700"    >
+
+### Pergunta 7: Top 10 Órgãos Pagadores
+📊 **Gráfico:** Barras horizontais  
+📁 **Arquivo:** `07_orgao_pagador.png`  
+📌 **Insight:** Principais responsáveis pelo pagamento
+<!--![Top 10 Órgãos Pagadores](images\07_orgao_pagador.png "Top 10 Órgãos Pagadores")-->
+<img src="images\07_orgao_pagador.png" title="Top 10 Órgãos Pagadores" width="1200" height="700"    >
+
+### Pergunta 8: Indicador de Transparência - Viagens com Dados Sigilosos
+📊 **Gráfico:** Gráfico de pizza/barras (Sigilo vs. Sem Sigilo)  
+📁 **Arquivo:** `08_sigilo_nome_viajante.png`  
+📌 **Insight:** Percentual de registros com `nome_viajante = "Informações protegidas por sigilo"` — indica o nível de transparência dos dados.
+
+Importante para auditoria e conformidade com legislação de proteção de dados.
+<!--![Indicador de Transparência - Viagens com Dados Sigilosos](images\08_sigilo_nome_viajante.png "Indicador de Transparência - Viagens com Dados Sigilosos")-->
+<img src="images\08_sigilo_nome_viajante.png" title="Indicador de Transparência - Viagens com Dados Sigilosos" width="1200" height="700"    >
+
+---
+
+## 10. CONCLUSÕES
+
+### 1. Pipeline Automatizado e Resiliente
+O pipeline implementado é **totalmente automatizado**, baixando dados do Google Drive e executando todas as fases sem intervenção manual. A adição de try/except em pontos críticos garante **resiliência** contra falhas.
+
+### 2. Qualidade de Dados Garantida
+A separação em 3 camadas (RAW → SILVER → GOLD) garante que:
+- ✅ Dados originais são preservados (auditoria)
+- ✅ Transformações são rastreáveis
+- ✅ Integridade referencial é mantida
+
+### 3. Insights Acionáveis
+Os **8 gráficos** e **análises SQL** fornecem evidências para decisões de negócio, como:
+- Otimização de gastos por órgão
+- Negociação de valores com destinos caros
+- Consolidação de processos de pagamento
+
+### 4. Escalabilidade
+A arquitetura permite fácil extensão:
+- Adicionar novas análises em Gold
+- Integrar com ferramentas de BI (Power BI, Tableau)
+- Automatizar com Airflow ou Prefect
+
+---
+
+## 11. SUGESTÕES FUTURAS
+
+### 📈 Análises Avançadas
+- Série temporal: tendências de gastos ao longo dos meses
+- Segmentação: perfil do viajante por cargo/órgão
+- Previsão: modelos preditivos para orçamento anual
+
+### 🗺️ Geoespacialização
+- Mapa interativo de destinos
+- Análise de rotas e distâncias
+- Custo por quilômetro viajado
+
+### 📊 Integração com BI
+- Dashboard em Power BI/Tableau conectado a Gold tables
+- Alertas automáticos para anomalias
+- Relatórios agendados por e-mail
+
+### 🔐 Auditoria e Conformidade
+- Log de todas as transformações
+- Identificação de possíveis fraudes
+- Rastreabilidade completa (audit trail)
+
+### 🌐 Produção
+- Migrar para banco em nuvem (AWS RDS, Google Cloud SQL)
+- Orquestração com Apache Airflow
+- Monitoramento com Datadog ou similar
