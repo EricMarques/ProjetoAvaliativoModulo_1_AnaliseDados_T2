@@ -297,37 +297,59 @@ python 3_analise.py
 📊 **Gráfico:** Barras horizontais  
 📁 **Arquivo:** `01_top5_orgaos.png`  
 📌 **Insight:** Identifica principais gastadores
+<!--![Top 5 Órgãos com Maior Custo](images\01_top5_orgaos.png "Top 5 Órgãos com Maior Custo")-->
+<img src="images\01_top5_orgaos.png" title="Top 5 Órgãos com Maior Custo" width="1200" height="600">
 
 ### Pergunta 2: Top 3 Destinos com Maior Custo Médio
 📊 **Gráfico:** Barras horizontais  
 📁 **Arquivo:** `02_top3_destinos.png`  
 📌 **Insight:** Revela destinos mais caros
+<!--![Top 3 Destinos com Maior Custo Médio](images\02_destinos.png "Top 3 Destinos com Maior Custo Médio")-->
+<img src="images\02_destinos.png" title="Top 3 Destinos com Maior Custo Médio" width="1200" height="700"    >
 
 ### Pergunta 3: Viagem de Maior Duração
 📊 **Gráfico:** Barra única  
 📁 **Arquivo:** `03_maior_duracao.png`  
 📌 **Insight:** Detecta outliers
+<!--![Viagem de Maior Duração](images\03_maior_duracao.png "Viagem de Maior Duração")-->
+<img src="images\03_maior_duracao.png" title="Viagem de Maior Duração" width="1200" height="700"    >
 
 ### Pergunta 4: Tipo de Pagamento com Maior Valor Médio
 📊 **Gráfico:** Barras verticais  
 📁 **Arquivo:** `04_tipo_pagamento.png`  
 📌 **Insight:** Compara modalidades de pagamento
+<!--![Tipo de Pagamento com Maior Valor Médio](images\04_tipo_pagamento.png "Tipo de Pagamento com Maior Valor Médio")-->
+<img src="images\04_tipo_pagamento.png" title="Tipo de Pagamento com Maior Valor Médio" width="1200" height="700"    >
 
 ### Pergunta 5: Meio de Transporte Mais Usado
 📊 **Gráfico:** Barras verticais  
 📁 **Arquivo:** `05_meio_transporte.png`  
 📌 **Insight:** Aéreo vs. Terrestre vs. Marítimo
+<!--![Meio de Transporte Mais Usado](images\05_meio_transporte.png "Meio de Transporte Mais Usado")-->
+<img src="images\05_meio_transporte.png" title="Meio de Transporte Mais Usado" width="1200" height="700"    >
 
 ### Pergunta 6: Top 10 UFs de Destino
 📊 **Gráfico:** Barras horizontais  
 📁 **Arquivo:** `06_destino_uf.png`  
 📌 **Insight:** Concentração geográfica
+<!--![Top 10 UFs de Destino](images\06_destino_uf.png "Top 10 UFs de Destino")-->
+<img src="images\06_destino_uf.png" title="Top 10 UFs de Destino" width="1200" height="700"    >
 
 ### Pergunta 7: Top 10 Órgãos Pagadores
 📊 **Gráfico:** Barras horizontais  
 📁 **Arquivo:** `07_orgao_pagador.png`  
 📌 **Insight:** Principais responsáveis pelo pagamento
+<!--![Top 10 Órgãos Pagadores](images\07_orgao_pagador.png "Top 10 Órgãos Pagadores")-->
+<img src="images\07_orgao_pagador.png" title="Top 10 Órgãos Pagadores" width="1200" height="700"    >
 
+### Pergunta 8: Indicador de Transparência - Viagens com Dados Sigilosos
+📊 **Gráfico:** Gráfico de pizza/barras (Sigilo vs. Sem Sigilo)  
+📁 **Arquivo:** `08_sigilo_nome_viajante.png`  
+📌 **Insight:** Percentual de registros com `nome_viajante = "Informações protegidas por sigilo"` — indica o nível de transparência dos dados.
+
+Importante para auditoria e conformidade com legislação de proteção de dados.
+<!--![Indicador de Transparência - Viagens com Dados Sigilosos](images\08_sigilo_nome_viajante.png "Indicador de Transparência - Viagens com Dados Sigilosos")-->
+<img src="images\08_sigilo_nome_viajante.png" title="Indicador de Transparência - Viagens com Dados Sigilosos" width="1200" height="700"    >
 
 ---
 
