@@ -63,6 +63,10 @@ O foco desta análise é identificar possíveis anomalias nos dados, efetuar tra
 
 A base de dados refere-se a uma relação de compras efetuadas por clientes.
 
+### Perguntas de negócios a serem respondidas:
+ar 
+
+
 ### Informações sobre a base de dados
 #### Dimensão
 <table>

@@ -168,6 +168,7 @@ silver_trecho = """
         FOREIGN KEY (id_viagem) REFERENCES silver_viagem(id_viagem)
     ) ENGINE=InnoDB;
 """
+
 table_definitions = {
     'raw_viagem': raw_viagem,
     'raw_passagem': raw_passagem,
