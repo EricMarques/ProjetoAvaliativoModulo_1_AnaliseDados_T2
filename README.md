@@ -10,16 +10,17 @@
 
 ## 📋 Índice
 1. [Contextualização](#1-contextualização)
-2. [Desafio e Perguntas de Negócio](#2-desafio-e-perguntas-de-negócio)
-3. [Resultados Esperados](#3-resultados-esperados-entrega)
-4. [Requisitos da Aplicação](#4-requisitos-da-aplicação)
-5. [Tecnologias Utilizadas](#5-tecnologias-utilizadas)
-6. [Arquitetura Medallion](#6-arquitetura-medallion)
-7. [Estrutura do Projeto](#7-estrutura-do-projeto)
-8. [Instalação e Execução](#8-instalação-e-execução)
-9. [Análises e Gráficos](#9-análises-e-gráficos)
-10. [Conclusões](#10-conclusões)
-11. [Sugestões Futuras](#11-sugestões-futuras)
+1. [Desafio e Perguntas de Negócio](#2-desafio-e-perguntas-de-negócio)
+1. [Resultados Esperados](#3-resultados-esperados-entrega)
+1. [Requisitos da Aplicação](#4-requisitos-da-aplicação)
+1. [Tecnologias Utilizadas](#5-tecnologias-utilizadas)
+1. [Arquitetura Medallion](#6-arquitetura-medallion)
+1. [Estrutura do Projeto](#7-estrutura-do-projeto)
+1. [Instalação e Execução](#8-instalação-e-execução)
+1. [Análises e Gráficos](#9-análises-e-gráficos)
+1. [Auditoria e Qualidade de Dados](#10-auditoria-e-qualidade-de-dados)
+1. [Conclusões](#10-conclusões)
+1. [Sugestões Futuras](#11-sugestões-futuras)
 
 ---
 
@@ -57,7 +58,6 @@ O pipeline foi desenvolvido para responder às seguintes **8 perguntas de negóc
 | 5️⃣ | Qual o **meio de transporte mais usado** nos trechos? | Analisa mobilidade preferida |
 | 6️⃣ | Qual **UF de destino aparece em mais trechos**? | Concentração geográfica |
 | 7️⃣ | Qual **órgão pagou mais** no total? | Principal pagador |
-| 8️⃣ | Qual o **percentual de viagens com dados sigilosos**? | Indicador de transparência |
 
 ---
 
@@ -297,63 +297,158 @@ python 3_analise.py
 📊 **Gráfico:** Barras horizontais  
 📁 **Arquivo:** `01_top5_orgaos.png`  
 📌 **Insight:** Identifica principais gastadores
-<!--![Top 5 Órgãos com Maior Custo](images\01_top5_orgaos.png "Top 5 Órgãos com Maior Custo")-->
-<img src="images\01_top5_orgaos.png" title="Top 5 Órgãos com Maior Custo" width="1200" height="600">
 
 ### Pergunta 2: Top 3 Destinos com Maior Custo Médio
 📊 **Gráfico:** Barras horizontais  
 📁 **Arquivo:** `02_top3_destinos.png`  
 📌 **Insight:** Revela destinos mais caros
-<!--![Top 3 Destinos com Maior Custo Médio](images\02_destinos.png "Top 3 Destinos com Maior Custo Médio")-->
-<img src="images\02_destinos.png" title="Top 3 Destinos com Maior Custo Médio" width="1200" height="700"    >
 
 ### Pergunta 3: Viagem de Maior Duração
 📊 **Gráfico:** Barra única  
 📁 **Arquivo:** `03_maior_duracao.png`  
 📌 **Insight:** Detecta outliers
-<!--![Viagem de Maior Duração](images\03_maior_duracao.png "Viagem de Maior Duração")-->
-<img src="images\03_maior_duracao.png" title="Viagem de Maior Duração" width="1200" height="700"    >
 
 ### Pergunta 4: Tipo de Pagamento com Maior Valor Médio
 📊 **Gráfico:** Barras verticais  
 📁 **Arquivo:** `04_tipo_pagamento.png`  
 📌 **Insight:** Compara modalidades de pagamento
-<!--![Tipo de Pagamento com Maior Valor Médio](images\04_tipo_pagamento.png "Tipo de Pagamento com Maior Valor Médio")-->
-<img src="images\04_tipo_pagamento.png" title="Tipo de Pagamento com Maior Valor Médio" width="1200" height="700"    >
 
 ### Pergunta 5: Meio de Transporte Mais Usado
 📊 **Gráfico:** Barras verticais  
 📁 **Arquivo:** `05_meio_transporte.png`  
 📌 **Insight:** Aéreo vs. Terrestre vs. Marítimo
-<!--![Meio de Transporte Mais Usado](images\05_meio_transporte.png "Meio de Transporte Mais Usado")-->
-<img src="images\05_meio_transporte.png" title="Meio de Transporte Mais Usado" width="1200" height="700"    >
 
 ### Pergunta 6: Top 10 UFs de Destino
 📊 **Gráfico:** Barras horizontais  
 📁 **Arquivo:** `06_destino_uf.png`  
 📌 **Insight:** Concentração geográfica
-<!--![Top 10 UFs de Destino](images\06_destino_uf.png "Top 10 UFs de Destino")-->
-<img src="images\06_destino_uf.png" title="Top 10 UFs de Destino" width="1200" height="700"    >
 
 ### Pergunta 7: Top 10 Órgãos Pagadores
 📊 **Gráfico:** Barras horizontais  
 📁 **Arquivo:** `07_orgao_pagador.png`  
 📌 **Insight:** Principais responsáveis pelo pagamento
-<!--![Top 10 Órgãos Pagadores](images\07_orgao_pagador.png "Top 10 Órgãos Pagadores")-->
-<img src="images\07_orgao_pagador.png" title="Top 10 Órgãos Pagadores" width="1200" height="700"    >
 
-### Pergunta 8: Indicador de Transparência - Viagens com Dados Sigilosos
-📊 **Gráfico:** Gráfico de pizza/barras (Sigilo vs. Sem Sigilo)  
-📁 **Arquivo:** `08_sigilo_nome_viajante.png`  
-📌 **Insight:** Percentual de registros com `nome_viajante = "Informações protegidas por sigilo"` — indica o nível de transparência dos dados.
-
-Importante para auditoria e conformidade com legislação de proteção de dados.
-<!--![Indicador de Transparência - Viagens com Dados Sigilosos](images\08_sigilo_nome_viajante.png "Indicador de Transparência - Viagens com Dados Sigilosos")-->
-<img src="images\08_sigilo_nome_viajante.png" title="Indicador de Transparência - Viagens com Dados Sigilosos" width="1200" height="700"    >
 
 ---
 
-## 10. CONCLUSÕES
+## 10. AUDITORIA E QUALIDADE DE DADOS
+ 
+O script `auditoria.py` (localizado em `pipeline/auditoria.py`) realiza uma auditoria completa do pipeline, validando integridade, consistência e qualidade dos dados em todas as camadas.
+ 
+### 📊 Contagem de Registros
+ 
+| Tabela | Quantidade |
+|--------|-----------|
+| `raw_viagem` | 341,860 |
+| `raw_passagem` | 167,260 |
+| `raw_pagamento` | 606,916 |
+| `raw_trecho` | 763,349 |
+| `silver_viagem` | 341,860 |
+| `silver_passagem` | 167,260 |
+| `silver_pagamento` | 606,916 |
+| `silver_trecho` | 763,349 |
+ 
+✅ **Resultado:** Sem perda de registros nas transformações (Raw = Silver)
+ 
+### 🔍 Qualidade da Camada Silver - Viagem
+ 
+| Validação | Resultado |
+|-----------|-----------|
+| ID viagem NULL ou vazio | 0 ✅ |
+| ID viagem duplicado | 0 ✅ |
+| Nome órgão superior NULL | 0 ✅ |
+| Nome viajante com sigilo | 51,366 ⚠️ |
+| CPF viajante vazio | 2,566 ⚠️ |
+| Data início NULL | 0 ✅ |
+| Data fim NULL | 0 ✅ |
+| Data fim anterior a data início | 0 ✅ |
+| Duração dias negativa | 0 ✅ |
+| Valor total NULL | 0 ✅ |
+| Valor total negativo | 3 ⚠️ |
+| Valor diárias negativo | 0 ✅ |
+ 
+**Insights:**
+- ✅ Integridade de chaves primárias garantida
+- ⚠️ 51,366 registros com proteção de sigilo (dentro da legislação)
+- ⚠️ 3 registros com valor total negativo (possíveis devoluções)
+### 🛡️ Validação de Formatos - Camada Raw
+ 
+| Validação | Resultado |
+|-----------|-----------|
+| Data início vazia | 0 ✅ |
+| Data fim vazia | 0 ✅ |
+| Data início formato inválido | 0 ✅ |
+| Data fim formato inválido | 0 ✅ |
+| CPF maior que 15 caracteres | 0 ✅ |
+| Nome viajante maior que 255 caracteres | 0 ✅ |
+| Justificativa maior que 1000 caracteres | 0 ✅ |
+ 
+**Resultado:** ✅ Todos os formatos válidos
+ 
+### 🔗 Comparação Raw × Silver
+ 
+| Tabela | Raw | Silver | Diferença |
+|--------|-----|--------|-----------|
+| `viagem` | 341,860 | 341,860 | 0 ✅ |
+| `passagem` | 167,260 | 167,260 | 0 ✅ |
+| `pagamento` | 606,916 | 606,916 | 0 ✅ |
+| `trecho` | 763,349 | 763,349 | 0 ✅ |
+ 
+**Resultado:** ✅ Sem perda ou duplicação de dados nas transformações
+ 
+### 🔐 Integridade Referencial
+ 
+| Validação | Resultado |
+|-----------|-----------|
+| `silver_passagem` sem viagem pai | 0 ✅ |
+| `silver_pagamento` sem viagem pai | 0 ✅ |
+| `silver_trecho` sem viagem pai | 0 ✅ |
+ 
+**Resultado:** ✅ Todas as chaves estrangeiras válidas
+ 
+### ⚙️ Validação de Constraints - Tabelas Filhas
+ 
+| Validação | Resultado |
+|-----------|-----------|
+| Pagamento: `tipo_pagamento` NULL | 0 ✅ |
+| Pagamento: `valor` NULL | 0 ✅ |
+| Pagamento: `valor` negativo | 0 ✅ |
+| Passagem: `id_viagem` NULL | 0 ✅ |
+| Passagem: `valor_passagem` negativo | 0 ✅ |
+| Trecho: `sequencia_trecho` NULL | 0 ✅ |
+| Trecho: `origem_data` NULL | 0 ✅ |
+| Trecho: `destino_data` NULL | 0 ✅ |
+ 
+**Resultado:** ✅ Todos os constraints respeitados
+ 
+### 📋 Amostras e Padrões Identificados
+ 
+**Situações em `silver_viagem`:**
+| Situação | Quantidade |
+|----------|-----------|
+| Realizada | 338,476 |
+| Não realizada | 3,384 |
+ 
+**Variações com Sigilo:**
+| Nome | Quantidade |
+|------|-----------|
+| Informações protegidas por sigilo | 51,366 |
+ 
+**Datas Inválidas na RAW:**
+- ✅ Nenhuma data inválida encontrada
+### 🎯 Conclusões da Auditoria
+ 
+✅ **Pipeline íntegro:** Sem perda ou alteração de dados nas transformações  
+✅ **Qualidade alta:** 99,9% dos registros estão válidos  
+✅ **Conformidade:** Constraints e integridade referencial mantidas  
+⚠️ **Observações:** 
+- 51,366 registros com sigilo (conforme legislação)
+- 3 registros com valores negativos (possíveis devoluções legítimas)
+- 2,566 CPFs vazios (dados incompletos na fonte)
+
+---
+
+## 11. CONCLUSÕES
 
 ### 1. Pipeline Automatizado e Resiliente
 O pipeline implementado é **totalmente automatizado**, baixando dados do Google Drive e executando todas as fases sem intervenção manual. A adição de try/except em pontos críticos garante **resiliência** contra falhas.
@@ -378,7 +473,7 @@ A arquitetura permite fácil extensão:
 
 ---
 
-## 11. SUGESTÕES FUTURAS
+## 12. SUGESTÕES FUTURAS
 
 ### 📈 Análises Avançadas
 - Série temporal: tendências de gastos ao longo dos meses
