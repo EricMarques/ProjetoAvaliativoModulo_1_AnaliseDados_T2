@@ -9,6 +9,7 @@ import banco
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 IMAGES_DIR = ROOT_DIR / "images"
+TEXTO_SIGILO = "Informações protegidas por sigilo"
 
 
 def criar_gold(conexao, cursor, nome_tabela, sql):
@@ -250,6 +251,44 @@ def main():
             nome_imagem="07_orgao_pagador.png",
             horizontal=True,
             tamanho=(16, 12),
+        )
+
+        # 8 - Indicador: viagens com nome_viajante protegido por sigilo
+        sql = f"""
+        SELECT
+            '{TEXTO_SIGILO}' AS indicador,
+            SUM(CASE WHEN TRIM(nome_viajante) = '{TEXTO_SIGILO}' THEN 1 ELSE 0 END) AS quantidade_sigilo,
+            COUNT(*) AS total_viagens,
+            ROUND(
+                SUM(CASE WHEN TRIM(nome_viajante) = '{TEXTO_SIGILO}' THEN 1 ELSE 0 END) * 100.0 / COUNT(*),
+                2
+            ) AS percentual_sigilo
+        FROM silver_viagem
+        """
+        criar_gold(conexao, cursor, "sigilo_nome_viajante", sql)
+        df = consultar_gold(conexao, "sigilo_nome_viajante")
+        print(df)
+
+        qtd_sigilo = int(df.loc[0, "quantidade_sigilo"])
+        total_viagens = int(df.loc[0, "total_viagens"])
+        percentual = df.loc[0, "percentual_sigilo"]
+        print("\n--- Indicador: nome_viajante protegido por sigilo ---")
+        print(f"Registros com sigilo: {qtd_sigilo:,} de {total_viagens:,} ({percentual}%)")
+
+        df_grafico = pd.DataFrame(
+            {
+                "categoria": ["Com sigilo", "Sem sigilo"],
+                "quantidade": [qtd_sigilo, total_viagens - qtd_sigilo],
+            }
+        )
+        gerar_grafico(
+            dataframe=df_grafico,
+            eixo_x="categoria",
+            eixo_y="quantidade",
+            titulo=f"Viagens com '{TEXTO_SIGILO}' em nome_viajante",
+            xlabel="Categoria",
+            ylabel="Quantidade de viagens",
+            nome_imagem="08_sigilo_nome_viajante.png",
         )
 
         print("=== Análise concluída com sucesso! ===")
