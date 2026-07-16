@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import banco
+import config.banco as banco
 from mysql.connector import Error
 
 # TABELAS RAW

@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import banco
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-IMAGES_DIR = ROOT_DIR / "images"
+IMAGES_DIR = ROOT_DIR / "reports/figures"
 TEXTO_SIGILO = "Informações protegidas por sigilo"
 
 
@@ -111,12 +111,16 @@ def main():
         # 2 - Os 3 destinos com maior custo médio por viagem
         sql = """
         SELECT
-            destinos,
-            AVG(valor_total) AS custo_medio
-        FROM silver_viagem
-        GROUP BY destinos
+            CONCAT(t.destino_cidade, '/', t.destino_uf) AS destino,
+            AVG(v.valor_total) AS custo_medio
+        FROM silver_viagem v
+        INNER JOIN silver_trecho t
+            ON v.id_viagem = t.id_viagem
+        GROUP BY
+            t.destino_cidade,
+            t.destino_uf
         ORDER BY custo_medio DESC
-        LIMIT 3
+        LIMIT 3;
         """
         criar_gold(conexao, cursor, "top3_destinos", sql)
         df = consultar_gold(conexao, "top3_destinos")
@@ -157,13 +161,17 @@ def main():
         # 3 - Viagem de maior duração e seu custo total
         sql = """
         SELECT
-            id_viagem,
-            nome_viajante,
-            duracao_dias,
-            valor_total
-        FROM silver_viagem
-        ORDER BY duracao_dias DESC
-        LIMIT 1
+            v.id_viagem,
+            v.nome_viajante,
+            t.destino_cidade,
+            t.destino_uf,
+            v.duracao_dias,
+            v.valor_total
+        FROM silver_viagem v
+        INNER JOIN silver_trecho t
+            ON v.id_viagem = t.id_viagem
+        ORDER BY v.duracao_dias DESC
+        LIMIT 1;
         """
         criar_gold(conexao, cursor, "maior_duracao", sql)
         df = consultar_gold(conexao, "maior_duracao")
@@ -184,11 +192,16 @@ def main():
         # 4 - Tipo de pagamento com maior valor médio
         sql = """
         SELECT
-            tipo_pagamento,
-            AVG(valor) AS valor_medio
-        FROM silver_pagamento
-        GROUP BY tipo_pagamento
-        ORDER BY valor_medio DESC
+            p.tipo_pagamento,
+            v.nome_orgao_superior,
+            AVG(p.valor) AS valor_medio
+        FROM silver_pagamento p
+        INNER JOIN silver_viagem v
+            ON p.id_viagem = v.id_viagem
+        GROUP BY
+            p.tipo_pagamento,
+            v.nome_orgao_superior
+        ORDER BY valor_medio DESC;
         """
         criar_gold(conexao, cursor, "tipo_pagamento_media", sql)
         df = consultar_gold(conexao, "tipo_pagamento_media")
@@ -206,11 +219,16 @@ def main():
         # 5 - Meio de transporte mais usado nos trechos
         sql = """
         SELECT
-            meio_transporte,
+            t.meio_transporte,
+            v.nome_orgao_superior,
             COUNT(*) AS quantidade
-        FROM silver_trecho
-        GROUP BY meio_transporte
-        ORDER BY quantidade DESC
+        FROM silver_trecho t
+        INNER JOIN silver_viagem v
+            ON t.id_viagem = v.id_viagem
+        GROUP BY
+            t.meio_transporte,
+            v.nome_orgao_superior
+        ORDER BY quantidade DESC;
         """
         criar_gold(conexao, cursor, "meio_transporte", sql)
         df = consultar_gold(conexao, "meio_transporte")
@@ -228,12 +246,16 @@ def main():
         # 6 - UF de destino que aparece em mais trechos
         sql = """
         SELECT
-            destino_uf,
+            t.destino_uf,
+            v.nome_orgao_superior,
             COUNT(*) AS quantidade
-        FROM silver_trecho
-        GROUP BY destino_uf
-        ORDER BY quantidade DESC
-        LIMIT 10
+        FROM silver_trecho t
+        INNER JOIN silver_viagem v
+            ON t.id_viagem = v.id_viagem
+        GROUP BY
+            t.destino_uf,
+            v.nome_orgao_superior
+        ORDER BY quantidade DESC;
         """
         criar_gold(conexao, cursor, "destino_uf", sql)
         df = consultar_gold(conexao, "destino_uf")
@@ -252,12 +274,14 @@ def main():
         # 7 - Órgão que pagou mais no total
         sql = """
         SELECT
-            nome_orgao_pagador,
-            SUM(valor) AS valor_total
-        FROM silver_pagamento
-        GROUP BY nome_orgao_pagador
-        ORDER BY valor_total DESC
-        LIMIT 10
+            v.nome_orgao_superior,
+            SUM(p.valor) AS valor_total
+        FROM silver_pagamento p
+        INNER JOIN silver_viagem v
+            ON p.id_viagem = v.id_viagem
+        GROUP BY
+            v.nome_orgao_superior
+        ORDER BY valor_total DESC;
         """
         criar_gold(conexao, cursor, "orgao_pagador", sql)
         df = consultar_gold(conexao, "orgao_pagador")
@@ -274,43 +298,43 @@ def main():
             tamanho=(16, 12),
         )
 
-        # 8 - Indicador: viagens com nome_viajante protegido por sigilo
-        sql = f"""
-        SELECT
-            '{TEXTO_SIGILO}' AS indicador,
-            SUM(CASE WHEN TRIM(nome_viajante) = '{TEXTO_SIGILO}' THEN 1 ELSE 0 END) AS quantidade_sigilo,
-            COUNT(*) AS total_viagens,
-            ROUND(
-                SUM(CASE WHEN TRIM(nome_viajante) = '{TEXTO_SIGILO}' THEN 1 ELSE 0 END) * 100.0 / COUNT(*),
-                2
-            ) AS percentual_sigilo
-        FROM silver_viagem
-        """
-        criar_gold(conexao, cursor, "sigilo_nome_viajante", sql)
-        df = consultar_gold(conexao, "sigilo_nome_viajante")
-        print(df)
+    #     # 8 - Indicador: viagens com nome_viajante protegido por sigilo
+    #     sql = f"""
+    #     SELECT
+    #         '{TEXTO_SIGILO}' AS indicador,
+    #         SUM(CASE WHEN TRIM(nome_viajante) = '{TEXTO_SIGILO}' THEN 1 ELSE 0 END) AS quantidade_sigilo,
+    #         COUNT(*) AS total_viagens,
+    #         ROUND(
+    #             SUM(CASE WHEN TRIM(nome_viajante) = '{TEXTO_SIGILO}' THEN 1 ELSE 0 END) * 100.0 / COUNT(*),
+    #             2
+    #         ) AS percentual_sigilo
+    #     FROM silver_viagem
+    #     """
+    #     criar_gold(conexao, cursor, "sigilo_nome_viajante", sql)
+    #     df = consultar_gold(conexao, "sigilo_nome_viajante")
+    #     print(df)
 
-        qtd_sigilo = int(df.loc[0, "quantidade_sigilo"])
-        total_viagens = int(df.loc[0, "total_viagens"])
-        percentual = df.loc[0, "percentual_sigilo"]
-        print("\n--- Indicador: nome_viajante protegido por sigilo ---")
-        print(f"Registros com sigilo: {qtd_sigilo:,} de {total_viagens:,} ({percentual}%)")
+    #     qtd_sigilo = int(df.loc[0, "quantidade_sigilo"])
+    #     total_viagens = int(df.loc[0, "total_viagens"])
+    #     percentual = df.loc[0, "percentual_sigilo"]
+    #     print("\n--- Indicador: nome_viajante protegido por sigilo ---")
+    #     print(f"Registros com sigilo: {qtd_sigilo:,} de {total_viagens:,} ({percentual}%)")
 
-        df_grafico = pd.DataFrame(
-            {
-                "categoria": ["Com sigilo", "Sem sigilo"],
-                "quantidade": [qtd_sigilo, total_viagens - qtd_sigilo],
-            }
-        )
-        gerar_grafico(
-            dataframe=df_grafico,
-            eixo_x="categoria",
-            eixo_y="quantidade",
-            titulo=f"Viagens com '{TEXTO_SIGILO}' em nome_viajante",
-            xlabel="Categoria",
-            ylabel="Quantidade de viagens",
-            nome_imagem="08_sigilo_nome_viajante.png",
-        )
+    #     df_grafico = pd.DataFrame(
+    #         {
+    #             "categoria": ["Com sigilo", "Sem sigilo"],
+    #             "quantidade": [qtd_sigilo, total_viagens - qtd_sigilo],
+    #         }
+    #     )
+    #     gerar_grafico(
+    #         dataframe=df_grafico,
+    #         eixo_x="categoria",
+    #         eixo_y="quantidade",
+    #         titulo=f"Viagens com '{TEXTO_SIGILO}' em nome_viajante",
+    #         xlabel="Categoria",
+    #         ylabel="Quantidade de viagens",
+    #         nome_imagem="08_sigilo_nome_viajante.png",
+    #     )
 
         print("=== Análise concluída com sucesso! ===")
         print(f"Imagens salvas em: {IMAGES_DIR}")

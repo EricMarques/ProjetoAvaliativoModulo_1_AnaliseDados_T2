@@ -26,7 +26,7 @@ COMO CONVERTEMOS O TEXTO DA CAMADA RAW (esse padrao se repete no SQL abaixo):
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import banco
+import config.banco as banco
 
 
 # 1) Esvaziar as tabelas SILVER (idempotencia).

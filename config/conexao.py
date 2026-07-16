@@ -17,7 +17,7 @@ conecta, imprime a versão do servidor e fecha a conexão.
 import mysql.connector
 from mysql.connector import Error
 
-from config import MYSQL_CONFIG
+from config.config import MYSQL_CONFIG
 
 
 def conectar():

@@ -19,8 +19,8 @@ import pandas as pd
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import config
-import banco
+import config.config as config
+import config.banco as banco
 
 # ---------------------------------------------------------------------------
 # Passo 0 - Localizar o arquivo .zip na pasta data/

@@ -1,4 +1,4 @@
-# 📊 Análise de Dados com Python [T2]
+# Análise de Dados com Python [T2]
 ## Projeto Avaliativo - Módulo 1 - Semana 13
 
 **Aluno:** Eric Felipe Barros Marques  
@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 Índice
+## Índice
 1. [Contextualização](#1-contextualização)
 1. [Desafio e Perguntas de Negócio](#2-desafio-e-perguntas-de-negócio)
 1. [Resultados Esperados](#3-resultados-esperados-entrega)
@@ -47,7 +47,7 @@ Dominar um **pipeline de dados (ETL)** e a **Arquitetura Medallion** com Python 
 
 ## 2. DESAFIO E PERGUNTAS DE NEGÓCIO
 
-O pipeline foi desenvolvido para responder às seguintes **8 perguntas de negócio**:
+O pipeline foi desenvolvido para responder às seguintes **7 perguntas de negócio**:
 
 | # | Pergunta | Análise |
 |---|----------|---------|
@@ -185,7 +185,7 @@ A arquitetura segue o padrão **Medallion** (3 camadas) amplamente utilizado em 
                           JOINs
                           GROUP BY
                           VIEWs
-                          📊 Gráficos
+                          Gráficos
 ```
 
 ---
@@ -195,34 +195,39 @@ A arquitetura segue o padrão **Medallion** (3 camadas) amplamente utilizado em 
 ```
 Projeto Avaliativo Modulo 1/
 │
-├── 📄 .env                      # Credenciais "Oficiais" do Ambiente/MySQL
-├── 📄 .env.example              # Modelo de .env (commitar)
-├── 📄 .gitignore                # Ignora .env, .zip, .csv, data/
+├── .gitignore                    # Ignora .env, .zip, .csv, data/
 │
-├── 🐍 config.py                 # Parâmetros + leitura .env
-├── 🐍 banco.py                  # Funções conexão MySQL
-├── 📄 requirements.txt          # Dependências
+├── requirements.txt              # Dependências
 │
-├── 🐍 0_criar_banco.py          # Criação database + 8 tabelas
-├── 🐍 1_extrair.py              # Fase 1: Download + Carga RAW
-├── 🐍 2_transformar.py          # Fase 2: Limpeza → SILVER
-├── 🐍 3_analise.py              # Fase 3: Análise → GOLD
-├── 🐍 auditoria.py              # Dados sobre toda base de dados(Demora muito para executar) 
+├── pipelines/                    # Diretório contendo os scripts que serão executados
+│   ├── 0_criar_banco.py          # Criação database + 7 tabelas
+│   ├── 1_extrair.py              # Fase 1: Download + Carga RAW
+│   ├── 2_transformar.py          # Fase 2: Limpeza → SILVER
+│   ├── 3_analise.py              # Fase 3: Análise → GOLD
+│   └── auditoria.py              # Dados sobre toda base de dados(Demora um para executar)
 │
-├── 📁 data/                     # Dados (ignorado no git)
+├── config/                       # Diretório com as configurações do projeto
+│   ├── .env                      # Credenciais "Oficiais" do Ambiente/MySQL
+│   ├── .env.example              # Modelo de .env (commitar)
+│   ├── banco.py                  # Funções conexão MySQL
+│   ├── conexao.py                # Configuração de conexão com o banco
+│   └── config.py                 # Parâmetros + leitura .env
+│
+├── data/                         # Dados (ignorado no git)
 │   └── viagens_2025_6meses.zip
 │
-├── 📁 images/                   # Gráficos gerados
-│   ├── 01_top5_orgaos.png
-│   ├── 02_top3_destinos.png
-│   ├── 03_maior_duracao.png
-│   ├── 04_tipo_pagamento.png
-│   ├── 05_meio_transporte.png
-│   ├── 06_destino_uf.png
-│   └── 07_orgao_pagador.png
-│   └── 08_sigilo_nome_viajante.png
+├── reports/                       # Diretório com os resultados gerados
+│   └── figures/                   # Diretório com as imagens dos gráficos geradas
+│       ├── 01_top5_orgaos.png
+│       ├── 02_top3_destinos.png
+│       ├── 03_maior_duracao.png
+│       ├── 04_tipo_pagamento.png
+│       ├── 05_meio_transporte.png
+│       ├── 06_destino_uf.png
+│       └── 07_orgao_pagador.png
+│   └── relatorio_final.pdf       # Arquivo contendo um relatório com alguns resultados do projeto
 │
-└── 📄 README.md                 # Arquivo contendo informações do projeto
+└── README.md                     # Arquivo contendo informações do projeto
 ```
 
 ---
@@ -268,18 +273,17 @@ pip install -r requirements.txt
 
 ### Passo 4: Executar o Pipeline
 
-**Criar banco e tabelas:**
+**Criar tabelas:**
 ```bash
-# Execute o SQL em seu cliente MySQL
-mysql -u root -p < 0_criar_banco.sql
+python 0_criar_banco.py
 ```
 
-**Fase 1 - Extrair (RAW):**
+**Fase 2 - Extrair (RAW):**
 ```bash
 python 1_extrair.py
 ```
 
-**Fase 2 - Transformar (SILVER):**
+**Fase 3 - Transformar (SILVER):**
 ```bash
 python 2_transformar.py
 ```
@@ -297,59 +301,51 @@ python 3_analise.py
 **Gráfico:** Barras horizontais  
 **Arquivo:** `01_top5_orgaos.png`  
 **Insight:** Identifica principais gastadores
-<!--![Top 5 Órgãos com Maior Custo](images\01_top5_orgaos.png "Top 5 Órgãos com Maior Custo")-->
-<img src="images\01_top5_orgaos.png" title="Top 5 Órgãos com Maior Custo" width="1200" height="600">
+<!--![Top 5 Órgãos com Maior Custo](reports\figures\01_top5_orgaos.png "Top 5 Órgãos com Maior Custo")-->
+<img src="reports\figures\01_top5_orgaos.png" title="Top 5 Órgãos com Maior Custo" width="1200" height="600">
 
 ### Pergunta 2: Top 3 Destinos com Maior Custo Médio
 **Gráfico:** Barras horizontais  
 **Arquivo:** `02_top3_destinos.png`  
 **Insight:** Revela destinos mais caros
-<!--![Top 3 Destinos com Maior Custo Médio](images\02_destinos.png "Top 3 Destinos com Maior Custo Médio")-->
-<img src="images\02_destinos.png" title="Top 3 Destinos com Maior Custo Médio" width="1200" height="700"    >
+<!--![Top 3 Destinos com Maior Custo Médio](reports\figures\02_destinos.png "Top 3 Destinos com Maior Custo Médio")-->
+<img src="reports\figures\02_destinos.png" title="Top 3 Destinos com Maior Custo Médio" width="1200" height="700"    >
 
 ### Pergunta 3: Viagem de Maior Duração
 **Gráfico:** Barra única  
 **Arquivo:** `03_maior_duracao.png`  
 **Insight:** Detecta outliers
-<!--![Viagem de Maior Duração](images\03_maior_duracao.png "Viagem de Maior Duração")-->
-<img src="images\03_maior_duracao.png" title="Viagem de Maior Duração" width="1200" height="700"    >
+<!--![Viagem de Maior Duração](reports\figures\03_maior_duracao.png "Viagem de Maior Duração")-->
+<img src="reports\figures\03_maior_duracao.png" title="Viagem de Maior Duração" width="1200" height="700"    >
 
 ### Pergunta 4: Tipo de Pagamento com Maior Valor Médio
 **Gráfico:** Barras verticais  
 **Arquivo:** `04_tipo_pagamento.png`  
 **Insight:** Compara modalidades de pagamento
-<!--![Tipo de Pagamento com Maior Valor Médio](images\04_tipo_pagamento.png "Tipo de Pagamento com Maior Valor Médio")-->
-<img src="images\04_tipo_pagamento.png" title="Tipo de Pagamento com Maior Valor Médio" width="1200" height="700"    >
+<!--![Tipo de Pagamento com Maior Valor Médio](reports\figures\04_tipo_pagamento.png "Tipo de Pagamento com Maior Valor Médio")-->
+<img src="reports\figures\04_tipo_pagamento.png" title="Tipo de Pagamento com Maior Valor Médio" width="1200" height="700"    >
 
 ### Pergunta 5: Meio de Transporte Mais Usado
 **Gráfico:** Barras verticais  
 **Arquivo:** `05_meio_transporte.png`  
 **Insight:** Aéreo vs. Terrestre vs. Marítimo
-<!--![Meio de Transporte Mais Usado](images\05_meio_transporte.png "Meio de Transporte Mais Usado")-->
-<img src="images\05_meio_transporte.png" title="Meio de Transporte Mais Usado" width="1200" height="700"    >
+<!--![Meio de Transporte Mais Usado](reports\figures\05_meio_transporte.png "Meio de Transporte Mais Usado")-->
+<img src="reports\figures\05_meio_transporte.png" title="Meio de Transporte Mais Usado" width="1200" height="700"    >
 
 ### Pergunta 6: Top 10 UFs de Destino
 **Gráfico:** Barras horizontais  
 **Arquivo:** `06_destino_uf.png`  
 **Insight:** Concentração geográfica
-<!--![Top 10 UFs de Destino](images\06_destino_uf.png "Top 10 UFs de Destino")-->
-<img src="images\06_destino_uf.png" title="Top 10 UFs de Destino" width="1200" height="700"    >
+<!--![Top 10 UFs de Destino](reports\figures\06_destino_uf.png "Top 10 UFs de Destino")-->
+<img src="reports\figures\06_destino_uf.png" title="Top 10 UFs de Destino" width="1200" height="700"    >
 
 ### Pergunta 7: Top 10 Órgãos Pagadores
 **Gráfico:** Barras horizontais  
 **Arquivo:** `07_orgao_pagador.png`  
 **Insight:** Principais responsáveis pelo pagamento
-<!--![Top 10 Órgãos Pagadores](images\07_orgao_pagador.png "Top 10 Órgãos Pagadores")-->
-<img src="images\07_orgao_pagador.png" title="Top 10 Órgãos Pagadores" width="1200" height="700"    >
+<!--![Top 10 Órgãos Pagadores](reports\figures\07_orgao_pagador.png "Top 10 Órgãos Pagadores")-->
+<img src="reports\figures\07_orgao_pagador.png" title="Top 10 Órgãos Pagadores" width="1200" height="700"    >
 
-### Pergunta 8: Indicador de Transparência - Viagens com Dados Sigilosos
-**Gráfico:** Gráfico de pizza/barras (Sigilo vs. Sem Sigilo)  
-**Arquivo:** `08_sigilo_nome_viajante.png`  
-**Insight:** Percentual de registros com `nome_viajante = "Informações protegidas por sigilo"` — indica o nível de transparência dos dados.
-
-Importante para auditoria e conformidade com legislação de proteção de dados.
-<!--![Indicador de Transparência - Viagens com Dados Sigilosos](images\08_sigilo_nome_viajante.png "Indicador de Transparência - Viagens com Dados Sigilosos")-->
-<img src="images\08_sigilo_nome_viajante.png" title="Indicador de Transparência - Viagens com Dados Sigilosos" width="1200" height="700"    >
 
 ---
 
@@ -372,74 +368,71 @@ O script `auditoria.py` (localizado em `pipeline/auditoria.py`) realiza uma audi
  
 **Resultado:** Sem perda de registros nas transformações (Raw = Silver)
  
-### 🔍 Qualidade da Camada Silver - Viagem
+### Qualidade da Camada Silver - Viagem
  
 | Validação | Resultado |
 |-----------|-----------|
-| ID viagem NULL ou vazio | 0 ✅ |
-| ID viagem duplicado | 0 ✅ |
-| Nome órgão superior NULL | 0 ✅ |
-| Nome viajante com sigilo | 51,366 ⚠️ |
-| CPF viajante vazio | 2,566 ⚠️ |
-| Data início NULL | 0 ✅ |
-| Data fim NULL | 0 ✅ |
-| Data fim anterior a data início | 0 ✅ |
-| Duração dias negativa | 0 ✅ |
-| Valor total NULL | 0 ✅ |
-| Valor total negativo | 3 ⚠️ |
-| Valor diárias negativo | 0 ✅ |
+| ID viagem NULL ou vazio | 0 |
+| ID viagem duplicado | 0 |
+| Nome órgão superior NULL | 0 |
+| Nome viajante com sigilo | 51,366 |
+| CPF viajante vazio | 2,566 |
+| Data início NULL | 0 |
+| Data fim NULL | 0 |
+| Data fim anterior a data início | 0 |
+| Duração dias negativa | 0 |
+| Valor total NULL | 0 |
+| Valor total negativo | 3 |
+| Valor diárias negativo | 0 |
  
 **Insights:**
-- ✅ Integridade de chaves primárias garantida
-- ⚠️ 51,366 registros com proteção de sigilo (dentro da legislação)
-- ⚠️ 3 registros com valor total negativo (possíveis devoluções)
+- Integridade de chaves primárias garantida
+- 51,366 registros com proteção de sigilo (dentro da legislação)
+- 3 registros com valor total negativo (possíveis devoluções)
 ### Validação de Formatos - Camada Raw
  
 | Validação | Resultado |
 |-----------|-----------|
-| Data início vazia | 0 ✅ |
-| Data fim vazia | 0 ✅ |
-| Data início formato inválido | 0 ✅ |
-| Data fim formato inválido | 0 ✅ |
-| CPF maior que 15 caracteres | 0 ✅ |
-| Nome viajante maior que 255 caracteres | 0 ✅ |
-| Justificativa maior que 1000 caracteres | 0 ✅ |
+| Data início vazia | 0 |
+| Data fim vazia | 0 |
+| Data início formato inválido | 0 |
+| Data fim formato inválido | 0 |
+| CPF maior que 15 caracteres | 0 |
+| Nome viajante maior que 255 caracteres | 0 |
+| Justificativa maior que 1000 caracteres | 0 |
  
-**Resultado:** ✅ Todos os formatos válidos
  
-### 🔗 Comparação Raw × Silver
+### Comparação Raw × Silver
  
 | Tabela | Raw | Silver | Diferença |
 |--------|-----|--------|-----------|
-| `viagem` | 341,860 | 341,860 | 0 ✅ |
-| `passagem` | 167,260 | 167,260 | 0 ✅ |
-| `pagamento` | 606,916 | 606,916 | 0 ✅ |
-| `trecho` | 763,349 | 763,349 | 0 ✅ |
+| `viagem` | 341,860 | 341,860 | 0 |
+| `passagem` | 167,260 | 167,260 | 0 |
+| `pagamento` | 606,916 | 606,916 | 0 |
+| `trecho` | 763,349 | 763,349 | 0 |
  
-**Resultado:** ✅ Sem perda ou duplicação de dados nas transformações
  
 ### Integridade Referencial
  
 | Validação | Resultado |
 |-----------|-----------|
-| `silver_passagem` sem viagem pai | 0 ✅ |
-| `silver_pagamento` sem viagem pai | 0 ✅ |
-| `silver_trecho` sem viagem pai | 0 ✅ |
+| `silver_passagem` sem viagem pai | 0 |
+| `silver_pagamento` sem viagem pai | 0 |
+| `silver_trecho` sem viagem pai | 0 |
  
-**Resultado:** ✅ Todas as chaves estrangeiras válidas
  
 ### Validação de Constraints - Tabelas Filhas
  
 | Validação | Resultado |
 |-----------|-----------|
-| Pagamento: `tipo_pagamento` NULL | 0 ✅ |
-| Pagamento: `valor` NULL | 0 ✅ |
-| Pagamento: `valor` negativo | 0 ✅ |
-| Passagem: `id_viagem` NULL | 0 ✅ |
-| Passagem: `valor_passagem` negativo | 0 ✅ |
-| Trecho: `sequencia_trecho` NULL | 0 ✅ |
-| Trecho: `origem_data` NULL | 0 ✅ |
-| Trecho: `destino_data` NULL | 0 ✅ |
+| Pagamento: `tipo_pagamento` NULL | 0 |
+| Pagamento: `valor` NULL | 0 |
+| Pagamento: `valor` negativo | 0 |
+| Passagem: `id_viagem` NULL | 0 |
+| Passagem: `valor_passagem` negativo | 0 |
+| Trecho: `sequencia_trecho` NULL | 0 |
+| Trecho: `origem_data` NULL | 0 |
+| Trecho: `destino_data` NULL | 0 |
  
 **Resultado:** Todos os constraints respeitados
  
@@ -482,7 +475,7 @@ A separação em 3 camadas (RAW → SILVER → GOLD) garante que:
 - Integridade referencial é mantida
 
 ### 3. Insights Acionáveis
-Os **8 gráficos** e **análises SQL** fornecem evidências para decisões de negócio, como:
+Os **7 gráficos** e **análises SQL** fornecem evidências para decisões de negócio, como:
 - Otimização de gastos por órgão
 - Negociação de valores com destinos caros
 - Consolidação de processos de pagamento

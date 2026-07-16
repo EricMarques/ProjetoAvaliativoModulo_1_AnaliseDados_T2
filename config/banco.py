@@ -11,7 +11,7 @@ MySQL Workbench. Aqui a gente apenas se conecta a ele.
 import mysql.connector
 from mysql.connector import Error
 
-from config import MYSQL_CONFIG
+from config.config import MYSQL_CONFIG
 
 
 def conectar():

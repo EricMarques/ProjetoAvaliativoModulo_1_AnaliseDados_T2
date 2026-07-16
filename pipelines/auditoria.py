@@ -3,8 +3,64 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+ROOT_DIR = Path(__file__).resolve().parent.parent
+REPORT_DIR = ROOT_DIR/"reports"
+
 import pandas as pd
-import banco
+import config.banco as banco
+
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+pdfmetrics.registerFont(
+    TTFont("DejaVu", "C:/Windows/Fonts/DejaVuSans.ttf")
+)
+
+styles = getSampleStyleSheet()
+
+styles["BodyText"].fontName = "DejaVu"
+styles["Heading1"].fontName = "DejaVu"
+
+
+relatorio = []
+
+
+def write(texto=""):
+    print(texto)
+    relatorio.append(texto)
+
+def gerar_pdf(nome=REPORT_DIR /"relatorio_final.pdf"):
+
+    doc = SimpleDocTemplate(str(nome))
+
+    elementos = []
+
+    estilos = getSampleStyleSheet()
+
+    for linha in relatorio:
+
+        if linha.startswith("==="):
+
+            elementos.append(
+                Paragraph(
+                    f"<b>{linha}</b>",
+                    estilos["Heading1"]
+                )
+            )
+
+        else:
+
+            elementos.append(
+                Paragraph(
+                    linha.replace("\n", "<br/>"),
+                    estilos["BodyText"]
+                )
+            )
+
+    doc.build(elementos)
+
 
 TEXTO_SIGILO = "Informações protegidas por sigilo"
 
@@ -21,6 +77,7 @@ def main():
     conexao = banco.conectar()
 
     print("=== CONTAGEM DE REGISTROS ===")
+    write("=== CONTAGEM DE REGISTROS ===")
     tabelas = [
         "raw_viagem",
         "raw_passagem",
@@ -35,10 +92,13 @@ def main():
         try:
             total = contar(conexao, f"SELECT COUNT(*) FROM {tabela}")
             print(f"{tabela}: {total:,}")
+            write(f"{tabela}: {total:,}")
         except Exception as erro:
             print(f"{tabela}: ERRO - {erro}")
+            write(f"{tabela}: ERRO - {erro}")
 
     print("\n=== SILVER_VIAGEM - QUALIDADE ===")
+    write("\n=== SILVER_VIAGEM - QUALIDADE ===")
     checks_viagem = [
         ("id_viagem NULL ou vazio", "SELECT COUNT(*) FROM silver_viagem WHERE id_viagem IS NULL OR TRIM(id_viagem) = ''"),
         ("id_viagem duplicado", "SELECT COUNT(*) - COUNT(DISTINCT id_viagem) FROM silver_viagem"),
@@ -58,10 +118,13 @@ def main():
             total = contar(conexao, sql)
             alerta = " ***" if total > 0 else ""
             print(f"  {nome}: {total:,}{alerta}")
+            write(f"  {nome}: {total:,}{alerta}")
         except Exception as erro:
             print(f"  {nome}: ERRO - {erro}")
+            write(f"  {nome}: ERRO - {erro}")
 
     print("\n=== RAW_VIAGEM - DATAS E VALORES SUSPEITOS ===")
+    write("\n=== RAW_VIAGEM - DATAS E VALORES SUSPEITOS ===")
     raw_checks = [
         ("data_inicio vazia", "SELECT COUNT(*) FROM raw_viagem WHERE data_inicio IS NULL OR TRIM(data_inicio) = ''"),
         ("data_fim vazia", "SELECT COUNT(*) FROM raw_viagem WHERE data_fim IS NULL OR TRIM(data_fim) = ''"),
@@ -75,8 +138,10 @@ def main():
         total = contar(conexao, sql)
         alerta = " ***" if total > 0 else ""
         print(f"  {nome}: {total:,}{alerta}")
+        write(f"  {nome}: {total:,}{alerta}")
 
     print("\n=== COMPARACAO RAW x SILVER ===")
+    write("\n=== COMPARACAO RAW x SILVER ===")
     pares = [
         ("raw_viagem", "silver_viagem"),
         ("raw_passagem", "silver_passagem"),
@@ -89,8 +154,10 @@ def main():
         diff = raw_total - silver_total
         alerta = " ***" if diff != 0 else ""
         print(f"  {raw} ({raw_total:,}) vs {silver} ({silver_total:,}) | diff={diff:,}{alerta}")
+        write(f"  {raw} ({raw_total:,}) vs {silver} ({silver_total:,}) | diff={diff:,}{alerta}")
 
     print("\n=== INTEGRIDADE REFERENCIAL ===")
+    write("\n=== INTEGRIDADE REFERENCIAL ===")
     for tabela in ["silver_passagem", "silver_pagamento", "silver_trecho"]:
         total = contar(
             conexao,
@@ -102,8 +169,10 @@ def main():
         )
         alerta = " ***" if total > 0 else ""
         print(f"  {tabela} sem viagem pai: {total:,}{alerta}")
+        write(f"  {tabela} sem viagem pai: {total:,}{alerta}")
 
     print("\n=== SILVER FILHAS - PROBLEMAS ===")
+    write("\n=== SILVER FILHAS - PROBLEMAS ===")
     filhas = [
         ("pagamento tipo_pagamento NULL", "SELECT COUNT(*) FROM silver_pagamento WHERE tipo_pagamento IS NULL"),
         ("pagamento valor NULL", "SELECT COUNT(*) FROM silver_pagamento WHERE valor IS NULL"),
@@ -118,13 +187,31 @@ def main():
         total = contar(conexao, sql)
         alerta = " ***" if total > 0 else ""
         print(f"  {nome}: {total:,}{alerta}")
+        write(f"  {nome}: {total:,}{alerta}")
 
     print("\n=== AMOSTRAS ===")
     print("Situacoes em silver_viagem:")
     print(q(conexao, "SELECT situacao, COUNT(*) AS qtd FROM silver_viagem GROUP BY situacao ORDER BY qtd DESC LIMIT 5").to_string(index=False))
+    write("\n=== AMOSTRAS ===")
+    write("Situacoes em silver_viagem:")
+    write(q(conexao, "SELECT situacao, COUNT(*) AS qtd FROM silver_viagem GROUP BY situacao ORDER BY qtd DESC LIMIT 5").to_string(index=False))
 
     print("\nVariacoes de nome com sigilo:")
+    write("\nVariacoes de nome com sigilo:")
     print(
+        q(
+            conexao,
+            """
+            SELECT nome_viajante, COUNT(*) AS qtd
+            FROM silver_viagem
+            WHERE nome_viajante LIKE '%sigilo%' OR nome_viajante LIKE '%protegid%'
+            GROUP BY nome_viajante
+            ORDER BY qtd DESC
+            LIMIT 10
+            """,
+        ).to_string(index=False)
+    )
+    write(
         q(
             conexao,
             """
@@ -139,6 +226,7 @@ def main():
     )
 
     print("\nExemplos de datas invalidas na RAW:")
+    write("\nExemplos de datas invalidas na RAW:")
     print(
         q(
             conexao,
@@ -153,6 +241,22 @@ def main():
             """,
         ).to_string(index=False)
     )
+    write(
+        q(
+            conexao,
+            """
+            SELECT data_inicio, data_fim, COUNT(*) AS qtd
+            FROM raw_viagem
+            WHERE (TRIM(data_inicio) <> '' AND data_inicio NOT REGEXP '^[0-9]{2}/[0-9]{2}/[0-9]{4}$')
+               OR (TRIM(data_fim) <> '' AND data_fim NOT REGEXP '^[0-9]{2}/[0-9]{2}/[0-9]{4}$')
+            GROUP BY data_inicio, data_fim
+            ORDER BY qtd DESC
+            LIMIT 5
+            """,
+        ).to_string(index=False)
+    )
+
+    gerar_pdf()
 
     conexao.close()
 
