@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import banco
+import config.banco as banco
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 IMAGES_DIR = ROOT_DIR / "reports/figures"
