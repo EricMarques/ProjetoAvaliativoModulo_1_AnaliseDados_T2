@@ -4,7 +4,7 @@
 **Aluno:** Eric Felipe Barros Marques  
 **Turma:** Análise de Dados com Python [T2]  
 **Data de Entrega:** 20/07/2026 às 22h  
-**Status:** ✅ Projeto Completo
+**Status:** Projeto Completo
 
 ---
 
@@ -34,10 +34,10 @@ Este projeto **simula uma consultoria de dados** contratada pelo governo para au
 
 Construir um **pipeline de dados completo (ETL)** seguindo a **Arquitetura Medallion** que:
 
-✅ Baixe automaticamente dados da fonte oficial (Google Drive)  
-✅ Preserve o histórico original na camada Raw (auditoria e rastreabilidade)  
-✅ Limpe, normalize e transforme os dados na camada Silver  
-✅ Responda perguntas de negócio com análises e visualizações na camada Gold  
+Baixe automaticamente dados da fonte oficial (Google Drive)  
+Preserve o histórico original na camada Raw (auditoria e rastreabilidade)  
+Limpe, normalize e transforme os dados na camada Silver  
+Responda perguntas de negócio com análises e visualizações na camada Gold  
 
 ### Competência Desenvolvida
 
@@ -51,13 +51,13 @@ O pipeline foi desenvolvido para responder às seguintes **8 perguntas de negóc
 
 | # | Pergunta | Análise |
 |---|----------|---------|
-| 1️⃣ | Quais os **5 órgãos com maior custo total**? | Identifica principais gastadores |
-| 2️⃣ | Quais os **3 destinos com maior custo médio** por viagem? | Revela destinos mais caros |
-| 3️⃣ | Qual a **viagem de maior duração** e seu custo? | Detecta outliers de tempo |
-| 4️⃣ | Qual o **tipo de pagamento com maior valor médio**? | Compara modalidades |
-| 5️⃣ | Qual o **meio de transporte mais usado** nos trechos? | Analisa mobilidade preferida |
-| 6️⃣ | Qual **UF de destino aparece em mais trechos**? | Concentração geográfica |
-| 7️⃣ | Qual **órgão pagou mais** no total? | Principal pagador |
+| 1 | Quais os **5 órgãos com maior custo total**? | Identifica principais gastadores |
+| 2 | Quais os **3 destinos com maior custo médio** por viagem? | Revela destinos mais caros |
+| 3 | Qual a **viagem de maior duração** e seu custo? | Detecta outliers de tempo |
+| 4 | Qual o **tipo de pagamento com maior valor médio**? | Compara modalidades |
+| 5 | Qual o **meio de transporte mais usado** nos trechos? | Analisa mobilidade preferida |
+| 6 | Qual **UF de destino aparece em mais trechos**? | Concentração geográfica |
+| 7 | Qual **órgão pagou mais** no total? | Principal pagador |
 
 ---
 
@@ -65,19 +65,19 @@ O pipeline foi desenvolvido para responder às seguintes **8 perguntas de negóc
 
 Ao final do projeto, foi construído um **pipeline completo** que:
 
-### ✅ Fase 1: Extração e Camada Raw
+### Fase 1: Extração e Camada Raw
 - Baixa dados de Viagens a Serviço direto da fonte oficial (Google Drive)
 - Preserva o dado original fielmente, garantindo rastreabilidade e auditoria
 - 4 tabelas Raw com todas as colunas VARCHAR
 
-### ✅ Fase 2: Transformação e Camada Silver
+### Fase 2: Transformação e Camada Silver
 - Limpa e organiza os dados com:
   - Tipagem correta (DECIMAL, DATE, VARCHAR, INT)
   - Integridade referencial entre as tabelas (PK, FK)
   - Eliminação de inconsistências, duplicidades e erros de formato
   - **8 constraints** (NOT NULL, CHECK, UNIQUE) distribuídos entre as 4 tabelas
 
-### ✅ Fase 3: Análise e Camada Gold
+### Fase 3: Análise e Camada Gold
 - Responde perguntas de negócio reais com:
   - Consultas SQL com agregações (JOIN + GROUP BY)
   - Tabelas e VIEWs criadas no MySQL
@@ -90,11 +90,11 @@ Ao final do projeto, foi construído um **pipeline completo** que:
 
 ### Fase 0 - Banco e Tabelas (`0_criar_banco.sql`)
 
-✅ Criar o database `viagens_analise`  
-✅ Criar **4 tabelas Raw** (todas as colunas VARCHAR, sem constraints):
+Criar o database `viagens_analise`  
+Criar **4 tabelas Raw** (todas as colunas VARCHAR, sem constraints):
 - `raw_viagem`, `raw_passagem`, `raw_pagamento`, `raw_trecho`
 
-✅ Criar **4 tabelas Silver** (tipadas, com PK, FK e constraints):
+Criar **4 tabelas Silver** (tipadas, com PK, FK e constraints):
 - `silver_viagem`, `silver_passagem`, `silver_pagamento`, `silver_trecho`
 
 **Constraints obrigatórios (8 no total):**
@@ -108,37 +108,37 @@ Ao final do projeto, foi construído um **pipeline completo** que:
 
 ### Fase 1 - Extração e Camada Raw (`1_extrair.py`)
 
-✅ Baixar arquivo `.zip` do Google Drive automaticamente  
-✅ Ler os **4 CSVs** em blocos:
+Baixar arquivo `.zip` do Google Drive automaticamente  
+Ler os **4 CSVs** em blocos:
 - `2025_Viagem.csv`, `2025_Pagamento.csv`, `2025_Passagem.csv`, `2025_Trecho.csv`
 
-✅ Carregar nas tabelas Raw **sem alterar conteúdo**  
-✅ Processo **idempotente** (TRUNCATE antes de carregar)  
-✅ **Resiliente** com try/except para tratamento de erros  
-✅ Configuração: Separador `;` | Encoding `latin-1` | Decimal `,` | Data `DD/MM/AAAA`
+Carregar nas tabelas Raw **sem alterar conteúdo**  
+Processo **idempotente** (TRUNCATE antes de carregar)  
+**Resiliente** com try/except para tratamento de erros  
+Configuração: Separador `;` | Encoding `latin-1` | Decimal `,` | Data `DD/MM/AAAA`
 
 ### Fase 2 - Transformação e Camada Silver (`2_transformar.py`)
 
-✅ Copiar dados de Raw para Silver **convertendo tipos:**
+Copiar dados de Raw para Silver **convertendo tipos:**
 - Texto → DECIMAL (ex.: `"1.234,50"` → `1234.50`)
 - Texto → DATE (ex.: `"30/06/2025"` → `2025-06-30`)
 - Campos vazios → NULL
 
-✅ Respeitar **integridade referencial** (PK, FK)  
-✅ Calcular colunas derivadas:
+Respeitar **integridade referencial** (PK, FK)  
+Calcular colunas derivadas:
 - `valor_total = diarias + passagens + outros - devoluções`
 - `duracao_dias = DATEDIFF(data_fim, data_inicio)`
 
-✅ Validar dados (CHECK constraints)
+Validar dados (CHECK constraints)
 
 ### Fase 3 - Camada Gold (`3_analise.ipynb`)
 
-✅ Responder **6+ perguntas de negócio** com:
+Responder **6+ perguntas de negócio** com:
 - Consultas SQL com agregações
 - Tabelas e VIEWs no MySQL
 - Gráficos com dataviz aplicado
 
-✅ Construir **camada Gold agregada** com:
+Construir **camada Gold agregada** com:
 - Junção de tabelas (JOIN)
 - Agrupamento de dados (GROUP BY)
 - Visualizações profissionais
@@ -294,58 +294,58 @@ python 3_analise.py
 ## 9. ANÁLISES E GRÁFICOS
 
 ### Pergunta 1: Top 5 Órgãos com Maior Custo
-📊 **Gráfico:** Barras horizontais  
-📁 **Arquivo:** `01_top5_orgaos.png`  
-📌 **Insight:** Identifica principais gastadores
+**Gráfico:** Barras horizontais  
+**Arquivo:** `01_top5_orgaos.png`  
+**Insight:** Identifica principais gastadores
 <!--![Top 5 Órgãos com Maior Custo](images\01_top5_orgaos.png "Top 5 Órgãos com Maior Custo")-->
 <img src="images\01_top5_orgaos.png" title="Top 5 Órgãos com Maior Custo" width="1200" height="600">
 
 ### Pergunta 2: Top 3 Destinos com Maior Custo Médio
-📊 **Gráfico:** Barras horizontais  
-📁 **Arquivo:** `02_top3_destinos.png`  
-📌 **Insight:** Revela destinos mais caros
+**Gráfico:** Barras horizontais  
+**Arquivo:** `02_top3_destinos.png`  
+**Insight:** Revela destinos mais caros
 <!--![Top 3 Destinos com Maior Custo Médio](images\02_destinos.png "Top 3 Destinos com Maior Custo Médio")-->
 <img src="images\02_destinos.png" title="Top 3 Destinos com Maior Custo Médio" width="1200" height="700"    >
 
 ### Pergunta 3: Viagem de Maior Duração
-📊 **Gráfico:** Barra única  
-📁 **Arquivo:** `03_maior_duracao.png`  
-📌 **Insight:** Detecta outliers
+**Gráfico:** Barra única  
+**Arquivo:** `03_maior_duracao.png`  
+**Insight:** Detecta outliers
 <!--![Viagem de Maior Duração](images\03_maior_duracao.png "Viagem de Maior Duração")-->
 <img src="images\03_maior_duracao.png" title="Viagem de Maior Duração" width="1200" height="700"    >
 
 ### Pergunta 4: Tipo de Pagamento com Maior Valor Médio
-📊 **Gráfico:** Barras verticais  
-📁 **Arquivo:** `04_tipo_pagamento.png`  
-📌 **Insight:** Compara modalidades de pagamento
+**Gráfico:** Barras verticais  
+**Arquivo:** `04_tipo_pagamento.png`  
+**Insight:** Compara modalidades de pagamento
 <!--![Tipo de Pagamento com Maior Valor Médio](images\04_tipo_pagamento.png "Tipo de Pagamento com Maior Valor Médio")-->
 <img src="images\04_tipo_pagamento.png" title="Tipo de Pagamento com Maior Valor Médio" width="1200" height="700"    >
 
 ### Pergunta 5: Meio de Transporte Mais Usado
-📊 **Gráfico:** Barras verticais  
-📁 **Arquivo:** `05_meio_transporte.png`  
-📌 **Insight:** Aéreo vs. Terrestre vs. Marítimo
+**Gráfico:** Barras verticais  
+**Arquivo:** `05_meio_transporte.png`  
+**Insight:** Aéreo vs. Terrestre vs. Marítimo
 <!--![Meio de Transporte Mais Usado](images\05_meio_transporte.png "Meio de Transporte Mais Usado")-->
 <img src="images\05_meio_transporte.png" title="Meio de Transporte Mais Usado" width="1200" height="700"    >
 
 ### Pergunta 6: Top 10 UFs de Destino
-📊 **Gráfico:** Barras horizontais  
-📁 **Arquivo:** `06_destino_uf.png`  
-📌 **Insight:** Concentração geográfica
+**Gráfico:** Barras horizontais  
+**Arquivo:** `06_destino_uf.png`  
+**Insight:** Concentração geográfica
 <!--![Top 10 UFs de Destino](images\06_destino_uf.png "Top 10 UFs de Destino")-->
 <img src="images\06_destino_uf.png" title="Top 10 UFs de Destino" width="1200" height="700"    >
 
 ### Pergunta 7: Top 10 Órgãos Pagadores
-📊 **Gráfico:** Barras horizontais  
-📁 **Arquivo:** `07_orgao_pagador.png`  
-📌 **Insight:** Principais responsáveis pelo pagamento
+**Gráfico:** Barras horizontais  
+**Arquivo:** `07_orgao_pagador.png`  
+**Insight:** Principais responsáveis pelo pagamento
 <!--![Top 10 Órgãos Pagadores](images\07_orgao_pagador.png "Top 10 Órgãos Pagadores")-->
 <img src="images\07_orgao_pagador.png" title="Top 10 Órgãos Pagadores" width="1200" height="700"    >
 
 ### Pergunta 8: Indicador de Transparência - Viagens com Dados Sigilosos
-📊 **Gráfico:** Gráfico de pizza/barras (Sigilo vs. Sem Sigilo)  
-📁 **Arquivo:** `08_sigilo_nome_viajante.png`  
-📌 **Insight:** Percentual de registros com `nome_viajante = "Informações protegidas por sigilo"` — indica o nível de transparência dos dados.
+**Gráfico:** Gráfico de pizza/barras (Sigilo vs. Sem Sigilo)  
+**Arquivo:** `08_sigilo_nome_viajante.png`  
+**Insight:** Percentual de registros com `nome_viajante = "Informações protegidas por sigilo"` — indica o nível de transparência dos dados.
 
 Importante para auditoria e conformidade com legislação de proteção de dados.
 <!--![Indicador de Transparência - Viagens com Dados Sigilosos](images\08_sigilo_nome_viajante.png "Indicador de Transparência - Viagens com Dados Sigilosos")-->
@@ -357,7 +357,7 @@ Importante para auditoria e conformidade com legislação de proteção de dados
  
 O script `auditoria.py` (localizado em `pipeline/auditoria.py`) realiza uma auditoria completa do pipeline, validando integridade, consistência e qualidade dos dados em todas as camadas.
  
-### 📊 Contagem de Registros
+### Contagem de Registros
  
 | Tabela | Quantidade |
 |--------|-----------|
@@ -370,7 +370,7 @@ O script `auditoria.py` (localizado em `pipeline/auditoria.py`) realiza uma audi
 | `silver_pagamento` | 606,916 |
 | `silver_trecho` | 763,349 |
  
-✅ **Resultado:** Sem perda de registros nas transformações (Raw = Silver)
+**Resultado:** Sem perda de registros nas transformações (Raw = Silver)
  
 ### 🔍 Qualidade da Camada Silver - Viagem
  
@@ -393,7 +393,7 @@ O script `auditoria.py` (localizado em `pipeline/auditoria.py`) realiza uma audi
 - ✅ Integridade de chaves primárias garantida
 - ⚠️ 51,366 registros com proteção de sigilo (dentro da legislação)
 - ⚠️ 3 registros com valor total negativo (possíveis devoluções)
-### 🛡️ Validação de Formatos - Camada Raw
+### Validação de Formatos - Camada Raw
  
 | Validação | Resultado |
 |-----------|-----------|
@@ -418,7 +418,7 @@ O script `auditoria.py` (localizado em `pipeline/auditoria.py`) realiza uma audi
  
 **Resultado:** ✅ Sem perda ou duplicação de dados nas transformações
  
-### 🔐 Integridade Referencial
+### Integridade Referencial
  
 | Validação | Resultado |
 |-----------|-----------|
@@ -428,7 +428,7 @@ O script `auditoria.py` (localizado em `pipeline/auditoria.py`) realiza uma audi
  
 **Resultado:** ✅ Todas as chaves estrangeiras válidas
  
-### ⚙️ Validação de Constraints - Tabelas Filhas
+### Validação de Constraints - Tabelas Filhas
  
 | Validação | Resultado |
 |-----------|-----------|
@@ -441,9 +441,9 @@ O script `auditoria.py` (localizado em `pipeline/auditoria.py`) realiza uma audi
 | Trecho: `origem_data` NULL | 0 ✅ |
 | Trecho: `destino_data` NULL | 0 ✅ |
  
-**Resultado:** ✅ Todos os constraints respeitados
+**Resultado:** Todos os constraints respeitados
  
-### 📋 Amostras e Padrões Identificados
+### Amostras e Padrões Identificados
  
 **Situações em `silver_viagem`:**
 | Situação | Quantidade |
@@ -457,13 +457,13 @@ O script `auditoria.py` (localizado em `pipeline/auditoria.py`) realiza uma audi
 | Informações protegidas por sigilo | 51,366 |
  
 **Datas Inválidas na RAW:**
-- ✅ Nenhuma data inválida encontrada
-### 🎯 Conclusões da Auditoria
+- Nenhuma data inválida encontrada
+### Conclusões da Auditoria
  
-✅ **Pipeline íntegro:** Sem perda ou alteração de dados nas transformações  
-✅ **Qualidade alta:** 99,9% dos registros estão válidos  
-✅ **Conformidade:** Constraints e integridade referencial mantidas  
-⚠️ **Observações:** 
+**Pipeline íntegro:** Sem perda ou alteração de dados nas transformações  
+**Qualidade alta:** 99,9% dos registros estão válidos  
+**Conformidade:** Constraints e integridade referencial mantidas  
+**Observações:** 
 - 51,366 registros com sigilo (conforme legislação)
 - 3 registros com valores negativos (possíveis devoluções legítimas)
 - 2,566 CPFs vazios (dados incompletos na fonte)
@@ -477,9 +477,9 @@ O pipeline implementado é **totalmente automatizado**, baixando dados do Google
 
 ### 2. Qualidade de Dados Garantida
 A separação em 3 camadas (RAW → SILVER → GOLD) garante que:
-- ✅ Dados originais são preservados (auditoria)
-- ✅ Transformações são rastreáveis
-- ✅ Integridade referencial é mantida
+- Dados originais são preservados (auditoria)
+- Transformações são rastreáveis
+- Integridade referencial é mantida
 
 ### 3. Insights Acionáveis
 Os **8 gráficos** e **análises SQL** fornecem evidências para decisões de negócio, como:
@@ -497,27 +497,27 @@ A arquitetura permite fácil extensão:
 
 ## 12. SUGESTÕES FUTURAS
 
-### 📈 Análises Avançadas
+### Análises Avançadas
 - Série temporal: tendências de gastos ao longo dos meses
 - Segmentação: perfil do viajante por cargo/órgão
 - Previsão: modelos preditivos para orçamento anual
 
-### 🗺️ Geoespacialização
+### Geoespacialização
 - Mapa interativo de destinos
 - Análise de rotas e distâncias
 - Custo por quilômetro viajado
 
-### 📊 Integração com BI
+### Integração com BI
 - Dashboard em Power BI/Tableau conectado a Gold tables
 - Alertas automáticos para anomalias
 - Relatórios agendados por e-mail
 
-### 🔐 Auditoria e Conformidade
+### Auditoria e Conformidade
 - Log de todas as transformações
 - Identificação de possíveis fraudes
 - Rastreabilidade completa (audit trail)
 
-### 🌐 Produção
+### Produção
 - Migrar para banco em nuvem (AWS RDS, Google Cloud SQL)
 - Orquestração com Apache Airflow
 - Monitoramento com Datadog ou similar
