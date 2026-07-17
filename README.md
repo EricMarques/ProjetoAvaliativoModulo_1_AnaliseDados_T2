@@ -195,7 +195,7 @@ A arquitetura segue o padrão **Medallion** (3 camadas) amplamente utilizado em 
 ```
 Projeto Avaliativo Modulo 1/
 │
-├── .gitignore                    # Ignora .env, .zip, .csv, data/
+├── .gitignore                    # Ignora arquivos sensíveis e desnecessários
 │
 ├── requirements.txt              # Dependências
 │
@@ -203,7 +203,8 @@ Projeto Avaliativo Modulo 1/
 │   ├── 0_criar_banco.py          # Criação database + 7 tabelas
 │   ├── 1_extrair.py              # Fase 1: Download + Carga RAW
 │   ├── 2_transformar.py          # Fase 2: Limpeza → SILVER
-│   ├── 3_analise.py              # Fase 3: Análise → GOLD
+│   ├── 3_analise.ipynb           # Fase 3: Análise → GOLD(Notebook)
+│   ├── 3_analise.py              # Fase 3: Análise → GOLD(Script Python)
 │   └── auditoria.py              # Dados sobre toda base de dados(Demora um para executar)
 │
 ├── config/                       # Diretório com as configurações do projeto
